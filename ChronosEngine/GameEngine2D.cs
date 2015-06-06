@@ -27,6 +27,7 @@ using System.Drawing;
 using OpenTK.Graphics.OpenGL;
 using ChronosEngine.Textures;
 using ChronosEngine.Render2D;
+using ChronosEngine.Interfaces;
 
 namespace ChronosEngine {
 	public class GameEngine2D {
@@ -34,10 +35,16 @@ namespace ChronosEngine {
 
 		private Resolution GameResolution { get; set; }
 
+		private IRenderer2D renderer { get; set; }
+
+		Sprite2D sprite1, sprite2;
+		Texture2D texture;
+
 		public GameEngine2D(Resolution gameResolution) {
 			this.GameResolution = gameResolution;
 
-			Orthographic = Matrix4.CreateOrthographic(GameResolution.Width, GameResolution.Height, 64f, -64f);
+			Orthographic = Matrix4.CreateOrthographic(GameResolution.Width, -GameResolution.Height, 64f, -64f);
+			renderer = new ImmediateRenderer2D();
 		}
 
 		public void Load(EventArgs e) {
@@ -46,22 +53,25 @@ namespace ChronosEngine {
 
 			GL.Enable(EnableCap.Blend);
 			GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+
+			texture = Texture2D.LoadTexture("platform1.png", true);
+			sprite1 = new Sprite2D(new Vector2(0, 0), new Vector2(32, 32), new RectangleF(0, 0, 1, 1), texture);
+			sprite2 = new Sprite2D(new Vector2(64, 0), new Vector2(16, 32));
 		}
 
 		public void Resize(EventArgs e) {
 			GL.MatrixMode(MatrixMode.Projection);
 			GL.LoadIdentity();
-			//GL.Ortho(0, Window.GameResolution.Width, Window.GameResolution.Height, 0, 0.0, 4.0);
 		}
 
 		public void Update(FrameEventArgs e) {
 		}
 
 		public void Render(FrameEventArgs e) {
-			GL.PushMatrix();
-			GL.LoadMatrix(ref Orthographic);
-
-			GL.PopMatrix();
+			renderer.Begin(ref Orthographic);
+			renderer.Draw(sprite1, true);
+			renderer.Draw(sprite2, true);
+			renderer.End();
 		}
 	}
 }
