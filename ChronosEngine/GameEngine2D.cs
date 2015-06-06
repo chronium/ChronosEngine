@@ -30,7 +30,7 @@ using ChronosEngine.Render2D;
 
 namespace ChronosEngine {
 	public class GameEngine2D {
-		private Matrix4 Orthographic { get; set; }
+		private Matrix4 Orthographic;
 
 		private Resolution GameResolution { get; set; }
 

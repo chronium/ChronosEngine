@@ -46,8 +46,6 @@
     <Compile Include="Render2D\DebugPrimitives\Rectangle2D.cs" />
     <Compile Include="Render2D\DebugPrimitives\Circle2D.cs" />
     <Compile Include="Shaders\Shader.cs" />
-    <Compile Include="Shaders\SpriteShader.cs" />
-    <Compile Include="Render2D\Sprite.cs" />
     <Compile Include="Textures\Texture2D.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
