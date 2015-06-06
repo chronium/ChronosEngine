@@ -1,6 +1,9 @@
 Author:
+
   Chronium Silver (Andrei Dimitriu) onlivechronium@gmail.com
+  
 Copyright (c) 2015, Chronium @ ChronoStudios
+
   All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
