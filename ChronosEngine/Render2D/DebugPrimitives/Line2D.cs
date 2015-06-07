@@ -34,7 +34,7 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
 namespace ChronosEngine.Render2D.DebugPrimitives {
-	public class Line2D : IRenderable {
+	public class Line2D : IRenderable2D {
 		public Vector2 pos1, pos2;
 		public Vector4 color;
 		public float width;
@@ -46,7 +46,7 @@ namespace ChronosEngine.Render2D.DebugPrimitives {
 			this.width = width;
 		}
 
-		public void Render() {
+		public void Render(IRenderer2D renderer) {
 			GL.LineWidth(width);
 			GL.Begin(PrimitiveType.Lines);
 

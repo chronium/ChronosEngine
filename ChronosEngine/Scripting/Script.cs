@@ -29,13 +29,22 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 using System;
+using Microsoft.Scripting.Hosting;
 
-namespace ChronosEngine.Interfaces {
-	public interface IRenderable {
+namespace ChronosEngine.Scripting {
+	public class Script {
 		/// <summary>
-		/// Render this instance.
+		/// Gets the source code of the script.
 		/// </summary>
-		void Render();
+		/// <value>The source code.</value>
+		public string SourceCode { get; }
+
+		public ScriptScope ScriptScope { get; }
+
+		public Script(string sourceCode, ScriptScope scriptScope) {
+			this.SourceCode = sourceCode;
+			this.ScriptScope = scriptScope;
+		}
 	}
 }
 

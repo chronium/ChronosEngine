@@ -32,25 +32,32 @@ using System;
 using OpenTK;
 using System.Drawing;
 using ChronosEngine.Textures;
+using ChronosEngine.Interfaces;
 
 namespace ChronosEngine.Render2D {
-	public class Sprite2D {
+	public class Sprite2D : IGameObject {
 		public Vector2 Position { get; set; }
 		public Vector2 Size { get; set; }
 		public RectangleF TextureCoords { get; set; }
 		public Texture2D Texture { get; set; }
+		public bool Centered { get; set; }
 
-		public Sprite2D(Vector2 position, Vector2 size) {
+		public Sprite2D(Vector2 position, Vector2 size, bool centered = false) {
 			this.Position = position;
 			this.Size = size;
 			this.TextureCoords = RectangleF.Empty;
 			this.Texture = null;
+			this.Centered = false;
 		}
 
-		public Sprite2D(Vector2 position, Vector2 size, RectangleF texCoords, Texture2D texture)
-			: this(position, size) {
+		public Sprite2D(Vector2 position, Vector2 size, RectangleF texCoords, Texture2D texture, bool centered = false)
+			: this(position, size, centered) {
 			this.TextureCoords = texCoords;
 			this.Texture = texture;
+		}
+
+		public void Render(IRenderer2D renderer) {
+			renderer.Draw(this, Centered);
 		}
 	}
 }

@@ -37,6 +37,10 @@ using OpenTK.Graphics;
 using ChronosEngine.Structures;
 using ChronosEngine.Render2D.DebugPrimitives;
 using ChronosEngine.Shaders;
+using Microsoft.Scripting.Hosting;
+using System.Collections.Generic;
+using ChronosEngine.Scripting;
+using System.IO;
 
 namespace ChronosEngine {
 	public class GameEngine {
@@ -61,6 +65,10 @@ namespace ChronosEngine {
 		/// </summary>
 		public GameEngine2D engine;
 
+		public List<Script> Scripts { get; private set; }
+
+		public ScriptEngine ScriptEngine;
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ChronosEngine.GameEngine"/> class.
 		/// </summary>
@@ -78,6 +86,22 @@ namespace ChronosEngine {
 			Window.UpdateFrame += OnUpdateFrame;
 		
 			engine = new GameEngine2D(gameResolution);
+
+			Scripts = new List<Script>();
+
+			ScriptEngine = IronPython.Hosting.Python.CreateEngine();
+		}
+
+		public void AddScript(string script) {
+			try {
+				string scriptSource = File.ReadAllText("Assets/Scripts/" + script + ".py");
+				Script s = new Script(scriptSource, ScriptEngine.CreateScope());
+				ScriptEngine.Execute(scriptSource, s.ScriptScope);
+				Scripts.Add(s);
+			} catch (FileNotFoundException e) {
+				Console.WriteLine("Script \"{0}\" could not be found", script);
+				Console.WriteLine(e);
+			}
 		}
 
 		#region Keyboard_KeyDown
@@ -115,6 +139,11 @@ namespace ChronosEngine {
 			GL.Enable(EnableCap.Texture2D);
 
 			engine.Load(e);
+			foreach (Script s in Scripts) {
+				dynamic loadFunc;
+				if (s.ScriptScope.TryGetVariable("load", out loadFunc))
+					loadFunc();
+			}
 		}
 
 		#endregion

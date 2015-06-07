@@ -34,7 +34,7 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
 namespace ChronosEngine.Render2D.DebugPrimitives {
-	public class Rectangle2D : IRenderable {
+	public class Rectangle2D : IRenderable2D {
 		public Vector2 pos1, pos2;
 		public Vector4 color;
 
@@ -44,7 +44,7 @@ namespace ChronosEngine.Render2D.DebugPrimitives {
 			this.color = color;
 		}
 
-		public void Render() {
+		public void Render(IRenderer2D renderer) {
 			GL.Begin(PrimitiveType.Quads);
 
 			GL.Color4(color);

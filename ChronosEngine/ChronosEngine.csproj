@@ -33,6 +33,17 @@
     <Reference Include="OpenTK">
       <HintPath>bin\Debug\OpenTK.dll</HintPath>
     </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="IronPython">
+      <HintPath>..\..\Desktop\IronPython-2.7.5\Platforms\Net45\IronPython.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Scripting">
+      <HintPath>..\..\Desktop\IronPython-2.7.5\Platforms\Net45\Microsoft.Scripting.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Dynamic">
+      <HintPath>..\..\Desktop\IronPython-2.7.5\Platforms\Net45\Microsoft.Dynamic.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -40,7 +51,6 @@
     <Compile Include="GameEngine2D.cs" />
     <Compile Include="Window.cs" />
     <Compile Include="Structures\Resolution.cs" />
-    <Compile Include="Interfaces\IRenderable.cs" />
     <Compile Include="Render2D\DebugPrimitives\Line2D.cs" />
     <Compile Include="Render2D\DebugPrimitives\Triangle2D.cs" />
     <Compile Include="Render2D\DebugPrimitives\Rectangle2D.cs" />
@@ -50,6 +60,9 @@
     <Compile Include="Render2D\ImmediateRenderer2D.cs" />
     <Compile Include="Render2D\Sprite2D.cs" />
     <Compile Include="Interfaces\IRenderer2D.cs" />
+    <Compile Include="Interfaces\IRenderable2D.cs" />
+    <Compile Include="Interfaces\IGameObject.cs" />
+    <Compile Include="Scripting\Script.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -60,5 +73,6 @@
     <Folder Include="Render2D\DebugPrimitives\" />
     <Folder Include="Shaders\" />
     <Folder Include="Textures\" />
+    <Folder Include="Scripting\" />
   </ItemGroup>
 </Project>

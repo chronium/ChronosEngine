@@ -38,6 +38,7 @@ using OpenTK.Graphics.OpenGL;
 using ChronosEngine.Textures;
 using ChronosEngine.Render2D;
 using ChronosEngine.Interfaces;
+using ChronosEngine.Scripting;
 
 namespace ChronosEngine {
 	public class GameEngine2D {
@@ -45,16 +46,18 @@ namespace ChronosEngine {
 
 		private Resolution GameResolution { get; set; }
 
-		private IRenderer2D renderer { get; set; }
+		private IRenderer2D Renderer { get; set; }
 
-		Sprite2D sprite1, sprite2;
+		private List<IGameObject> GameObjects { get; set; }
+
 		Texture2D texture;
 
 		public GameEngine2D(Resolution gameResolution) {
 			this.GameResolution = gameResolution;
 
 			Orthographic = Matrix4.CreateOrthographic(GameResolution.Width, -GameResolution.Height, 64f, -64f);
-			renderer = new ImmediateRenderer2D();
+			Renderer = new ImmediateRenderer2D();
+			GameObjects = new List<IGameObject>();
 		}
 
 		public void Load(EventArgs e) {
@@ -64,9 +67,18 @@ namespace ChronosEngine {
 			GL.Enable(EnableCap.Blend);
 			GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 
+			var addObj = new Action<IGameObject>(AddObject);
+
+			foreach (Script script in GameEngine.Instance.Scripts)
+				script.ScriptScope.SetVariable("add_object", addObj);
+
 			texture = Texture2D.LoadTexture("platform1.png", true);
-			sprite1 = new Sprite2D(new Vector2(0, 0), new Vector2(32, 32), new RectangleF(0, 0, 1, 1), texture);
-			sprite2 = new Sprite2D(new Vector2(64, 0), new Vector2(16, 32));
+			GameObjects.Add(new Sprite2D(new Vector2(0, 0), new Vector2(32, 32), new RectangleF(0, 0, 1, 1), texture, true));
+			GameObjects.Add(new Sprite2D(new Vector2(64, 0), new Vector2(16, 32), true));
+		}
+
+		public void AddObject(IGameObject obj) {
+			GameObjects.Add(obj);
 		}
 
 		public void Resize(EventArgs e) {
@@ -78,10 +90,10 @@ namespace ChronosEngine {
 		}
 
 		public void Render(FrameEventArgs e) {
-			renderer.Begin(ref Orthographic);
-			renderer.Draw(sprite1, true);
-			renderer.Draw(sprite2, true);
-			renderer.End();
+			Renderer.Begin(ref Orthographic);
+			foreach (IGameObject gameObject in GameObjects)
+				gameObject.Render(Renderer);
+			Renderer.End();
 		}
 	}
 }
