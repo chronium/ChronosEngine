@@ -1,0 +1,19 @@
+# Created by https://www.gitignore.io
+
+### MonoDevelop ###
+#User Specific
+*.userprefs
+*.usertasks
+
+#Mono Project Files
+*.pidb
+*.resources
+test-results/
+
+*.dll
+*.mdb
+
+Microsoft.*
+
+*.exe
+obj/
