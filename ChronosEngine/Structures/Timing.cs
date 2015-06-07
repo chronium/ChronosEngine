@@ -31,7 +31,28 @@
 using System;
 
 namespace ChronosEngine.Structures {
+	/// <summary>
+	/// Structure used to set the timing of a <see cref="ChronosEngine.Window"/>.
+	/// </summary>
 	public struct Timing {
+		/// <summary>
+		/// Updates per second.
+		/// </summary>
+		public int UPS;
+		/// <summary>
+		/// Frames per second.
+		/// </summary>
+		public int FPS;
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ChronosEngine.Structures.Timing"/> struct.
+		/// </summary>
+		/// <param name="ups">Updates per second.</param>
+		/// <param name="fps">Frames per second.</param>
+		public Timing(int ups, int fps) {
+			this.UPS = ups;
+			this.FPS = fps;
+		}
 	}
 }
 

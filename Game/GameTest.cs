@@ -29,10 +29,54 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 using System;
+using ChronosEngine;
+using OpenTK.Graphics.OpenGL;
+using OpenTK;
+using ChronosEngine.Interfaces;
+using ChronosEngine.Render2D;
+using System.Drawing;
+using System.Collections.Generic;
+using ChronosEngine.Scripting;
 
 namespace Game {
-	public class GameTest {
-		public GameTest() {
+	public class GameTest : ChronoGame {
+		private IRenderer2D Renderer { get; set; }
+		private Matrix4 Orthographic;
+
+		public List<IGameObject> GameObjects = new List<IGameObject>();
+
+		public ScriptManager ScriptManager;
+
+		public GameTest() : base() {
+			Renderer = new ImmediateRenderer2D();
+			Orthographic = Matrix4.CreateOrthographic(GameEngine.GameResolution.Width, -GameEngine.GameResolution.Height, 64f, -64f);
+		
+			ScriptManager = new ScriptManager();
+		}
+
+		public override void OnLoad(EventArgs e) {
+			GL.ClearColor(Color.CornflowerBlue);
+			GL.Viewport(0, 0, GameEngine.GameResolution.Width, GameEngine.GameResolution.Height);
+
+			GL.Enable(EnableCap.Blend);
+			GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+
+			ScriptManager.AddScript("test");
+
+			ScriptManager.LoadScripts();
+
+			GameObjects.Add(new Sprite2D(Vector2.Zero, new Vector2(32, 32), true));
+		}
+
+		public override void OnRenderFrame(FrameEventArgs e) {
+			GL.Clear(ClearBufferMask.ColorBufferBit);
+
+			Renderer.Begin(ref Orthographic);
+			foreach (IGameObject obj in GameObjects)
+				obj.Render(Renderer);
+			Renderer.End();
+
+			GameEngine.Window.SwapBuffers();
 		}
 	}
 }

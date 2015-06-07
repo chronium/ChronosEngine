@@ -56,18 +56,17 @@ namespace ChronosEngine {
 		public Window Window { get; private set; }
 
 		/// <summary>
+		/// Gets or sets the game resolution.
+		/// </summary>
+		/// <value>The game resolution.</value>
+		public Resolution GameResolution { get; set; }
+
+		/// <summary>
 		/// The current view.
 		/// </summary>
 		public RectangleF CurrentView = new RectangleF(0, 0, 800, 600);
 
-		/// <summary>
-		/// The engine.
-		/// </summary>
-		public GameEngine2D engine;
-
-		public List<Script> Scripts { get; private set; }
-
-		public ScriptEngine ScriptEngine;
+		public ChronoGame Game { get; set; }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ChronosEngine.GameEngine"/> class.
@@ -75,8 +74,10 @@ namespace ChronosEngine {
 		/// <param name="screenResolution">Screen resolution.</param>
 		/// <param name="gameResolution">Game resolution.</param>
 		/// <param name="windowTitle">Window title.</param>
-		public GameEngine(Resolution screenResolution, Resolution gameResolution, string windowTitle) {
+		public GameEngine(Resolution screenResolution, Resolution gameResolution, string windowTitle, ChronoGame game) {
 			Instance = this;
+
+			this.GameResolution = gameResolution;
 
 			Window = new Window(screenResolution, gameResolution, windowTitle);
 			Window.KeyDown += Keyboard_KeyDown;
@@ -84,24 +85,7 @@ namespace ChronosEngine {
 			Window.Resize += OnResize;
 			Window.RenderFrame += OnRenderFrame;
 			Window.UpdateFrame += OnUpdateFrame;
-		
-			engine = new GameEngine2D(gameResolution);
-
-			Scripts = new List<Script>();
-
-			ScriptEngine = IronPython.Hosting.Python.CreateEngine();
-		}
-
-		public void AddScript(string script) {
-			try {
-				string scriptSource = File.ReadAllText("Assets/Scripts/" + script + ".py");
-				Script s = new Script(scriptSource, ScriptEngine.CreateScope());
-				ScriptEngine.Execute(scriptSource, s.ScriptScope);
-				Scripts.Add(s);
-			} catch (FileNotFoundException e) {
-				Console.WriteLine("Script \"{0}\" could not be found", script);
-				Console.WriteLine(e);
-			}
+			Game = game;
 		}
 
 		#region Keyboard_KeyDown
@@ -132,18 +116,7 @@ namespace ChronosEngine {
 		/// <param name="sender">Caller of the function</param>
 		/// <param name="e">Not used.</param>
 		public void OnLoad(object sender, EventArgs e) {
-			GL.ClearColor(Color.MidnightBlue);
-			GL.Enable(EnableCap.LineSmooth);
-			GL.Enable(EnableCap.Multisample);
-			GL.Enable(EnableCap.PolygonSmooth);
-			GL.Enable(EnableCap.Texture2D);
-
-			engine.Load(e);
-			foreach (Script s in Scripts) {
-				dynamic loadFunc;
-				if (s.ScriptScope.TryGetVariable("load", out loadFunc))
-					loadFunc();
-			}
+			Game.OnLoad(e);
 		}
 
 		#endregion
@@ -157,7 +130,7 @@ namespace ChronosEngine {
 		/// <param name="e">Contains information on the new GameWindow size.</param>
 		/// <remarks>There is no need to call the base implementation.</remarks>
 		protected void OnResize(object sender, EventArgs e) {
-			engine.Resize(e);
+			Game.OnResize(e);
 		}
 
 		#endregion
@@ -170,7 +143,7 @@ namespace ChronosEngine {
 		/// <param name="e">Contains timing information.</param>
 		/// <remarks>There is no need to call the base implementation.</remarks>
 		protected void OnUpdateFrame(object sender, FrameEventArgs e) {
-			engine.Update(e);
+			Game.OnUpdateFrame(e);
 		}
 
 		#endregion
@@ -184,11 +157,7 @@ namespace ChronosEngine {
 		/// <param name="e">Contains timing information.</param>
 		/// <remarks>There is no need to call the base implementation.</remarks>
 		protected void OnRenderFrame(object sender, FrameEventArgs e) {
-			GL.Clear(ClearBufferMask.ColorBufferBit);
-
-			engine.Render(e);
-
-			Window.SwapBuffers();
+			Game.OnRenderFrame(e);
 		}
 
 		#endregion

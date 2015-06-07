@@ -41,60 +41,7 @@ using ChronosEngine.Interfaces;
 using ChronosEngine.Scripting;
 
 namespace ChronosEngine {
-	public class GameEngine2D {
-		private Matrix4 Orthographic;
-
-		private Resolution GameResolution { get; set; }
-
-		private IRenderer2D Renderer { get; set; }
-
-		private List<IGameObject> GameObjects { get; set; }
-
-		Texture2D texture;
-
-		public GameEngine2D(Resolution gameResolution) {
-			this.GameResolution = gameResolution;
-
-			Orthographic = Matrix4.CreateOrthographic(GameResolution.Width, -GameResolution.Height, 64f, -64f);
-			Renderer = new ImmediateRenderer2D();
-			GameObjects = new List<IGameObject>();
-		}
-
-		public void Load(EventArgs e) {
-			GL.ClearColor(Color.CornflowerBlue);
-			GL.Viewport(0, 0, GameResolution.Width, GameResolution.Height);
-
-			GL.Enable(EnableCap.Blend);
-			GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
-
-			var addObj = new Action<IGameObject>(AddObject);
-
-			foreach (Script script in GameEngine.Instance.Scripts)
-				script.ScriptScope.SetVariable("add_object", addObj);
-
-			texture = Texture2D.LoadTexture("platform1.png", true);
-			GameObjects.Add(new Sprite2D(new Vector2(0, 0), new Vector2(32, 32), new RectangleF(0, 0, 1, 1), texture, true));
-			GameObjects.Add(new Sprite2D(new Vector2(64, 0), new Vector2(16, 32), true));
-		}
-
-		public void AddObject(IGameObject obj) {
-			GameObjects.Add(obj);
-		}
-
-		public void Resize(EventArgs e) {
-			GL.MatrixMode(MatrixMode.Projection);
-			GL.LoadIdentity();
-		}
-
-		public void Update(FrameEventArgs e) {
-		}
-
-		public void Render(FrameEventArgs e) {
-			Renderer.Begin(ref Orthographic);
-			foreach (IGameObject gameObject in GameObjects)
-				gameObject.Render(Renderer);
-			Renderer.End();
-		}
+	public class GameRenderer2D {
 	}
 }
 

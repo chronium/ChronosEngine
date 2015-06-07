@@ -29,11 +29,50 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 using System;
+using ChronosEngine.Structures;
+using OpenTK;
+using OpenTK.Graphics.OpenGL;
 
 namespace ChronosEngine {
 	public class ChronoGame {
-		public ChronoGame() {
+		/// <summary>
+		/// Gets the game engine.
+		/// </summary>
+		/// <value>The game engine.</value>
+		public GameEngine GameEngine { get; }
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ChronosEngine.ChronoGame"/> class.
+		/// </summary>
+		/// <param name="title">Window title.</param>
+		public ChronoGame(string title = "Untitled") {
+			this.GameEngine = new GameEngine(new Resolution(800, 600), new Resolution(800, 600), title, this);
 		}
+
+		/// <summary>
+		/// Setup OpenGL and load resources here.
+		/// </summary>
+		/// <param name="e">Not used.</param>
+		/// <remarks>There is no need to call the base implementation.</remarks>
+		public virtual void OnLoad(EventArgs e) { }
+		/// <summary>
+		/// Respond to resize events here.
+		/// </summary>
+		/// <param name="e">Contains information on the new GameWindow size.</param>
+		/// <remarks>There is no need to call the base implementation.</remarks>
+		public virtual void OnResize(EventArgs e) { }
+		/// <summary>
+		/// Add your game logic here.
+		/// </summary>
+		/// <param name="e">Contains timing information.</param>
+		/// <remarks>There is no need to call the base implementation.</remarks>
+		public virtual void OnUpdateFrame(FrameEventArgs e) { }
+		/// <summary>
+		/// Add your game rendering code here.
+		/// </summary>
+		/// <param name="e">Contains timing information.</param>
+		/// <remarks>There is no need to call the base implementation.</remarks>
+		public virtual void OnRenderFrame(FrameEventArgs e) { }
 	}
 }
 

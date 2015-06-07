@@ -29,10 +29,52 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 using System;
+using System.Collections.Generic;
+using System.IO;
+using Microsoft.Scripting.Hosting;
+using IronPython.Hosting;
 
 namespace ChronosEngine.Scripting {
 	public class ScriptManager {
+		/// <summary>
+		/// Gets the scripts.
+		/// </summary>
+		/// <value>The scripts.</value>
+		public List<Script> Scripts { get; }
+		/// <summary>
+		/// Gets the scripting engine.
+		/// </summary>
+		/// <value>The scripting engine.</value>
+		public ScriptEngine ScriptingEngine { get; }
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ChronosEngine.Scripting.ScriptManager"/> class.
+		/// </summary>
 		public ScriptManager() {
+			this.Scripts = new List<Script>();
+			ScriptingEngine = Python.CreateEngine();
+		}
+
+		/// <summary>
+		/// Adds a new script.
+		/// </summary>
+		/// <param name="script">Script name.</param>
+		public void AddScript(string scriptName) {
+			try {
+				string scriptSource = File.ReadAllText("Assets/Scripts/" + scriptName + ".py");
+				Scripts.Add(new Script(scriptSource, ScriptingEngine));
+			} catch (FileNotFoundException e) {
+				Console.WriteLine("Script \"{0}\" could not be found", scriptName);
+				Console.WriteLine(e);
+			}
+		}
+
+		public void LoadScripts() {
+			foreach (Script s in Scripts) {
+				dynamic loadFunc;
+				if (s.ScriptScope.TryGetVariable("load", out loadFunc))
+					loadFunc();
+			}
 		}
 	}
 }

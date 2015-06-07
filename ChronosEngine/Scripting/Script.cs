@@ -39,11 +39,29 @@ namespace ChronosEngine.Scripting {
 		/// <value>The source code.</value>
 		public string SourceCode { get; }
 
+		/// <summary>
+		/// Gets the scripting scope.
+		/// </summary>
+		/// <value>The scripting scope.</value>
 		public ScriptScope ScriptScope { get; }
 
-		public Script(string sourceCode, ScriptScope scriptScope) {
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ChronosEngine.Scripting.Script"/> class.
+		/// </summary>
+		/// <param name="sourceCode">Source code.</param>
+		/// <param name="scriptEngine">Script engine.</param>
+		public Script(string sourceCode, ScriptEngine scriptEngine) {
 			this.SourceCode = sourceCode;
-			this.ScriptScope = scriptScope;
+			this.ScriptScope = scriptEngine.CreateScope();
+			this.LoadScript(scriptEngine);
+		}
+
+		/// <summary>
+		/// Loads the script.
+		/// </summary>
+		/// <param name="engine">Script engine.</param>
+		private void LoadScript(ScriptEngine scriptEngine) {
+			scriptEngine.Execute(this.SourceCode, this.ScriptScope);
 		}
 	}
 }
