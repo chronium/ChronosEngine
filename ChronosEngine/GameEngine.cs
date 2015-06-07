@@ -45,11 +45,6 @@ using System.IO;
 namespace ChronosEngine {
 	public class GameEngine {
 		/// <summary>
-		/// The instance.
-		/// </summary>
-		public static GameEngine Instance;
-
-		/// <summary>
 		/// Gets the window.
 		/// </summary>
 		/// <value>The window.</value>
@@ -75,8 +70,6 @@ namespace ChronosEngine {
 		/// <param name="gameResolution">Game resolution.</param>
 		/// <param name="windowTitle">Window title.</param>
 		public GameEngine(Resolution screenResolution, Resolution gameResolution, string windowTitle, ChronoGame game) {
-			Instance = this;
-
 			this.GameResolution = gameResolution;
 
 			Window = new Window(screenResolution, gameResolution, windowTitle);
