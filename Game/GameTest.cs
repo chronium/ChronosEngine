@@ -37,11 +37,11 @@ using ChronosEngine.Render2D;
 using System.Drawing;
 using System.Collections.Generic;
 using ChronosEngine.Scripting;
+using ChronosEngine.Textures;
 
 namespace Game {
 	public class GameTest : ChronoGame {
 		private IRenderer2D Renderer { get; set; }
-		private Matrix4 Orthographic;
 
 		public List<IGameObject> GameObjects = new List<IGameObject>();
 
@@ -49,34 +49,28 @@ namespace Game {
 
 		public GameTest() : base() {
 			Renderer = new ImmediateRenderer2D();
-			Orthographic = Matrix4.CreateOrthographic(GameEngine.GameResolution.Width, -GameEngine.GameResolution.Height, 64f, -64f);
-		
 			ScriptManager = new ScriptManager();
 		}
 
 		public override void OnLoad(EventArgs e) {
-			GL.ClearColor(Color.CornflowerBlue);
-			GL.Viewport(0, 0, GameEngine.GameResolution.Width, GameEngine.GameResolution.Height);
-
-			GL.Enable(EnableCap.Blend);
-			GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+			base.OnLoad(e);
 
 			ScriptManager.AddScript("test");
 
 			ScriptManager.LoadScripts();
-
-			GameObjects.Add(new Sprite2D(Vector2.Zero, new Vector2(32, 32), true));
+			var texture = Texture2D.LoadTexture("platform1.png", true);
+			GameObjects.Add(new Sprite2D(Vector2.Zero, new Vector2(32, 32), new RectangleF(0, 0, 32, 32), texture, true));
 		}
 
 		public override void OnRenderFrame(FrameEventArgs e) {
-			GL.Clear(ClearBufferMask.ColorBufferBit);
+			this.Clear();
 
-			Renderer.Begin(ref Orthographic);
+			Renderer.Begin();
 			foreach (IGameObject obj in GameObjects)
 				obj.Render(Renderer);
 			Renderer.End();
 
-			GameEngine.Window.SwapBuffers();
+			this.SwapBuffers();
 		}
 	}
 }

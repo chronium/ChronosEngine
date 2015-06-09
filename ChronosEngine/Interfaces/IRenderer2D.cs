@@ -38,6 +38,7 @@ namespace ChronosEngine.Interfaces {
 	/// </summary>
 	public interface IRenderer2D {
 		void Begin(ref Matrix4 matrix);
+		void Begin();
 		void Draw(Sprite2D sprite, bool centered = false);
 		void End();
 	}

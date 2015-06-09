@@ -30,17 +30,19 @@
 //
 using System;
 using System.Drawing;
-using System.IO;
-using OpenTK.Graphics.OpenGL;
 using System.Drawing.Imaging;
+using System.IO;
+using OpenTK;
+using OpenTK.Graphics.OpenGL;
 
 namespace ChronosEngine.Textures {
-	public class Texture2D {
+	public class Texture2D : AssetProvider {
 		/// <summary>
 		/// Gets the texture ID.
 		/// </summary>
 		/// <value>The texture ID.</value>
 		public int TextureID { get; private set; }
+		public Vector2 Dimensions { get; private set; }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ChronosEngine.Textures.Texture2D"/> class.
@@ -57,7 +59,10 @@ namespace ChronosEngine.Textures {
 		/// <param name="path">The image path.</param>
 		/// <param name="nearest">If set to <c>true</c>, set filter to nearest.</param>
 		public static Texture2D LoadTexture(string path, bool nearest = false) {
-			return new Texture2D(loadImage(String.Format("Assets/Textures/{0}", path), nearest));
+			var image = loadImage(GetAssetPath(path), nearest);
+            var tex = new Texture2D(image.Item2);
+			tex.Dimensions = image.Item1;
+			return tex;
 		}
 
 		/// <summary>
@@ -97,14 +102,22 @@ namespace ChronosEngine.Textures {
 		/// <returns>The image.</returns>
 		/// <param name="filename">The texture path.</param>
 		/// <param name="nearest">If set to <c>true</c>, set filter to nearest.</param>
-		private static int loadImage(string filename, bool nearest = false) {
+		private static Tuple<Vector2, int> loadImage(string filename, bool nearest = false) {
 			try {
 				Image file = Image.FromFile(filename);
-				return loadImage(new Bitmap(file), nearest);
+				return new Tuple<Vector2, int>(new Vector2(file.Width, file.Height), loadImage(new Bitmap(file), nearest));
 			}
 			catch (FileNotFoundException e) {
-				return -1;
+				return new Tuple<Vector2, int>(Vector2.Zero, -1);
 			}
+		}
+
+		new public static string GetAssetRoot() {
+			return "Assets/Textures/";
+		}
+
+		new public static string GetAssetPath(string asset) {
+			return GetAssetRoot() + asset;
 		}
 	}
 }

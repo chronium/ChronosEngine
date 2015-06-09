@@ -41,6 +41,10 @@ namespace ChronosEngine.Render2D {
 			GL.PushMatrix();
 			GL.LoadMatrix(ref renderMatrix);
 		}
+		public void Begin() {
+			GL.PushMatrix();
+			GL.LoadMatrix(ref DefaultGlobals.OrthographicProjection);
+		}
 
 		public void Draw(Sprite2D sprite, bool centered = false) {
 			Vector2 p = sprite.Position;

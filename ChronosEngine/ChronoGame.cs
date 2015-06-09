@@ -29,6 +29,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 using System;
+using System.Drawing;
 using ChronosEngine.Structures;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
@@ -47,14 +48,19 @@ namespace ChronosEngine {
 		/// <param name="title">Window title.</param>
 		public ChronoGame(string title = "Untitled") {
 			this.GameEngine = new GameEngine(new Resolution(800, 600), new Resolution(800, 600), title, this);
+			DefaultGlobals.OrthographicProjection = Matrix4.CreateOrthographic(GameEngine.GameResolution.Width, -GameEngine.GameResolution.Height, 64f, -64f);
 		}
 
 		/// <summary>
 		/// Setup OpenGL and load resources here.
 		/// </summary>
 		/// <param name="e">Not used.</param>
-		/// <remarks>There is no need to call the base implementation.</remarks>
-		public virtual void OnLoad(EventArgs e) { }
+		public virtual void OnLoad(EventArgs e) {
+			this.SetClearColor(Color.Black);
+			this.SetViewport(0, 0, GameEngine.GameResolution.Width, GameEngine.GameResolution.Height);
+			this.EnableTextures();
+			this.SetBlendMode();
+		}
 		/// <summary>
 		/// Respond to resize events here.
 		/// </summary>
@@ -73,6 +79,28 @@ namespace ChronosEngine {
 		/// <param name="e">Contains timing information.</param>
 		/// <remarks>There is no need to call the base implementation.</remarks>
 		public virtual void OnRenderFrame(FrameEventArgs e) { }
+
+		public void SetClearColor(Color color) {
+			GL.ClearColor(color);
+		}
+		public void SetViewport(int x, int y, int width, int height) {
+			GL.Viewport(x, y, width, height);
+		}
+		public void EnableTextures() {
+			GL.Enable(EnableCap.Texture2D);
+		}
+		public void SetBlendMode() {
+			GL.Enable(EnableCap.Blend);
+			GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+		}
+
+		public void Clear() {
+			GL.Clear(ClearBufferMask.ColorBufferBit);
+		}
+
+		public void SwapBuffers() {
+			GameEngine.Window.SwapBuffers();
+		}
 	}
 }
 

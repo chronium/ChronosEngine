@@ -52,8 +52,14 @@ namespace ChronosEngine.Render2D {
 
 		public Sprite2D(Vector2 position, Vector2 size, RectangleF texCoords, Texture2D texture, bool centered = false)
 			: this(position, size, centered) {
-			this.TextureCoords = texCoords;
 			this.Texture = texture;
+			float dx = 1 / texture.Dimensions.X;
+			float dy = 1 / texture.Dimensions.Y;
+			float tx = texCoords.X * dx;
+			float ty = texCoords.Y * dy;
+			float tw = texCoords.Width * dx;
+			float th = texCoords.Height * dy;
+			this.TextureCoords = new RectangleF(tx, ty, tw, th);
 		}
 
 		public void Render(IRenderer2D renderer) {
