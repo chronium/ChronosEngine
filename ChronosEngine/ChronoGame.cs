@@ -56,6 +56,10 @@ namespace ChronosEngine {
 			DefaultGlobals.OrthographicProjection = Matrix4.CreateOrthographic(GameEngine.GameResolution.Width, -GameEngine.GameResolution.Height, 64f, -64f);
 		}
 
+		public void Run() {
+			GameEngine.Window.Run(60, 60);
+		}
+
 		/// <summary>
 		/// Setup OpenGL and load resources here.
 		/// </summary>
