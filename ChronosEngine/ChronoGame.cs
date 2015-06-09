@@ -50,6 +50,11 @@ namespace ChronosEngine {
 			this.GameEngine = new GameEngine(new Resolution(800, 600), new Resolution(800, 600), title, this);
 			DefaultGlobals.OrthographicProjection = Matrix4.CreateOrthographic(GameEngine.GameResolution.Width, -GameEngine.GameResolution.Height, 64f, -64f);
 		}
+		
+		public ChronoGame(Resolution resolution, string title = "Untitled") {
+			this.GameEngine = new GameEngine(resolution, resolution, title, this);
+			DefaultGlobals.OrthographicProjection = Matrix4.CreateOrthographic(GameEngine.GameResolution.Width, -GameEngine.GameResolution.Height, 64f, -64f);
+		}
 
 		/// <summary>
 		/// Setup OpenGL and load resources here.
