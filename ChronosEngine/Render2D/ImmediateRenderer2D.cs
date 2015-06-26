@@ -34,7 +34,6 @@ using OpenTK.Graphics.OpenGL;
 using OpenTK;
 using System.Runtime.CompilerServices;
 using System.Drawing;
-using ChronosEngine.Textures;
 
 namespace ChronosEngine.Render2D {
 	public class ImmediateRenderer2D : IRenderer2D {
@@ -54,45 +53,22 @@ namespace ChronosEngine.Render2D {
 			if (centered)
 				p -= s / 2;
 
+			GL.Begin(PrimitiveType.Quads);
+			GL.BindTexture(TextureTarget.Texture2D, 0);
 			if (sprite.Texture == null) {
-				GL.Begin(PrimitiveType.Quads);
-				GL.BindTexture(TextureTarget.Texture2D, 0);
 				Ver2(new Vector2(p.X, p.Y));
 				Ver2(new Vector2(p.X + s.X, p.Y));
 				Ver2(new Vector2(p.X + s.X, p.Y + s.Y));
 				Ver2(new Vector2(p.X, p.Y + s.Y));
-				GL.End();
-			} else
-				Draw(sprite.Texture, sprite.Position, sprite.TextureCoords, centered);
-		}
-		public void Draw(Texture2D texture, Vector2 position, bool centered = false) {
-			RectangleF texCoords = new RectangleF(0, 0, texture.Dimensions.X, texture.Dimensions.Y);
-			this.Draw(texture, position, texCoords, centered);
-		}
-		public void Draw(Texture2D texture, Vector2 position, Vector2 size, bool centered = false) {
-			RectangleF texCoords = new RectangleF(0, 0, texture.Dimensions.X, texture.Dimensions.Y);
-			this.Draw(texture, position, size, texCoords, centered);
-		}
-		public void Draw(Texture2D texture, Vector2 position, RectangleF texCoords, bool centered = false) {
-			this.Draw(texture, position, texture.Dimensions, texCoords, centered);
-		}
-		public void Draw(Texture2D texture, Vector2 position, Vector2 size, RectangleF texCoords, bool centered = false) {
-			var p = position;
-			var t = texture;
-			var tc = texCoords;
-			var ts = size;
+			} else {
+				RectangleF tc = sprite.TextureCoords;
 
-			if (centered)
-				p -= ts / 2;
-
-			GL.Begin(PrimitiveType.Quads);
-			GL.BindTexture(TextureTarget.Texture2D, texture.TextureID);
-
-			Ver2Tex2(new Vector2(p.X, p.Y), new Vector2(tc.X, tc.Y));
-			Ver2Tex2(new Vector2(p.X + ts.X, p.Y), new Vector2(tc.X + tc.Width, tc.Y));
-			Ver2Tex2(new Vector2(p.X + ts.X, p.Y + ts.Y), new Vector2(tc.X + tc.Width, tc.Y + tc.Height));
-			Ver2Tex2(new Vector2(p.X, p.Y + ts.Y), new Vector2(tc.X, tc.Y + tc.Height));
-
+				GL.BindTexture(TextureTarget.Texture2D, sprite.Texture.TextureID);
+				Ver2Tex2(new Vector2(p.X, p.Y), new Vector2(tc.X, tc.Y));
+				Ver2Tex2(new Vector2(p.X + s.X, p.Y), new Vector2(tc.X + tc.Width, tc.Y));
+				Ver2Tex2(new Vector2(p.X + s.X, p.Y + s.Y), new Vector2(tc.X + tc.Width, tc.Y + tc.Height));
+				Ver2Tex2(new Vector2(p.X, p.Y + s.Y), new Vector2(tc.X, tc.Y + tc.Height));
+			}
 			GL.End();
 		}
 

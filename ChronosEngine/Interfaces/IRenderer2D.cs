@@ -31,8 +31,6 @@
 using System;
 using OpenTK;
 using ChronosEngine.Render2D;
-using ChronosEngine.Textures;
-using System.Drawing;
 
 namespace ChronosEngine.Interfaces {
 	/// <summary>
@@ -42,10 +40,6 @@ namespace ChronosEngine.Interfaces {
 		void Begin(ref Matrix4 matrix);
 		void Begin();
 		void Draw(Sprite2D sprite, bool centered = false);
-		void Draw(Texture2D texture, Vector2 position, RectangleF texCoords, bool centered = false);
-		void Draw(Texture2D texture, Vector2 position, bool centered = false);
-		void Draw(Texture2D texture, Vector2 position, Vector2 size, RectangleF texCoords, bool centered = false);
-		void Draw(Texture2D texture, Vector2 position, Vector2 size, bool centered = false);
 		void End();
 	}
 }

@@ -38,8 +38,6 @@ using System.Drawing;
 using System.Collections.Generic;
 using ChronosEngine.Scripting;
 using ChronosEngine.Textures;
-using ChronosEngine.UserInterface;
-using ChronosEngine.Structures;
 
 namespace Game {
 	public class GameTest : ChronoGame {
@@ -49,9 +47,7 @@ namespace Game {
 
 		public ScriptManager ScriptManager;
 
-		public UI UserInterface;
-
-		public GameTest() : base(new Resolution(800, 608), "Test game") {
+		public GameTest() : base() {
 			Renderer = new ImmediateRenderer2D();
 			ScriptManager = new ScriptManager();
 		}
@@ -60,12 +56,11 @@ namespace Game {
 			base.OnLoad(e);
 
 			ScriptManager.AddScript("test");
-			ScriptManager.LoadScripts();
 
-			var buttonTexture = Texture2D.LoadTexture("button.png", true);
-			UserInterface = new UI();
-			UserInterface.Elements.Add(new UIButton(new Vector2(32, 96), Vector2.Zero, buttonTexture));
-        }
+			ScriptManager.LoadScripts();
+			var texture = Texture2D.LoadTexture("platform1.png", true);
+			GameObjects.Add(new Sprite2D(Vector2.Zero, new Vector2(32, 32), new RectangleF(0, 0, 32, 32), texture, true));
+		}
 
 		public override void OnRenderFrame(FrameEventArgs e) {
 			this.Clear();
@@ -73,7 +68,6 @@ namespace Game {
 			Renderer.Begin();
 			foreach (IGameObject obj in GameObjects)
 				obj.Render(Renderer);
-			UserInterface.Render(Renderer);
 			Renderer.End();
 
 			this.SwapBuffers();

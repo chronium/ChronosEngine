@@ -107,7 +107,7 @@ namespace ChronosEngine.Textures {
 				Image file = Image.FromFile(filename);
 				return new Tuple<Vector2, int>(new Vector2(file.Width, file.Height), loadImage(new Bitmap(file), nearest));
 			}
-			catch (FileNotFoundException) {
+			catch (FileNotFoundException e) {
 				return new Tuple<Vector2, int>(Vector2.Zero, -1);
 			}
 		}
