@@ -40,7 +40,7 @@ namespace ChronosEngine.Scripting {
 		/// Gets the scripts.
 		/// </summary>
 		/// <value>The scripts.</value>
-		public List<Script> Scripts { get; }
+		public Dictionary<string, Script> Scripts { get; }
 		/// <summary>
 		/// Gets the scripting engine.
 		/// </summary>
@@ -48,11 +48,21 @@ namespace ChronosEngine.Scripting {
 		public ScriptEngine ScriptingEngine { get; }
 
 		/// <summary>
+		/// Gets the scripting scope.
+		/// </summary>
+		/// <value>The scripting scope.</value>
+		public ScriptScope ScriptScope { get; }
+
+		/// <summary>
 		/// Initializes a new instance of the <see cref="ChronosEngine.Scripting.ScriptManager"/> class.
 		/// </summary>
 		public ScriptManager() {
-			this.Scripts = new List<Script>();
+			this.Scripts = new Dictionary<string, Script>();
 			ScriptingEngine = Python.CreateEngine();
+			var paths = ScriptingEngine.GetSearchPaths();
+			paths.Add("Assets/Scripts");
+			ScriptingEngine.SetSearchPaths(paths);
+			ScriptScope = ScriptingEngine.CreateScope();
 		}
 
 		/// <summary>
@@ -61,19 +71,16 @@ namespace ChronosEngine.Scripting {
 		/// <param name="script">Script name.</param>
 		public void AddScript(string scriptName) {
 			try {
-				string scriptSource = File.ReadAllText("Assets/Scripts/" + scriptName + ".py");
-				Scripts.Add(new Script(scriptSource, ScriptingEngine));
+				Scripts[scriptName] = new Script("Assets/Scripts/" + scriptName + ".py", this);
 			} catch (FileNotFoundException e) {
 				Console.WriteLine("Script \"{0}\" could not be found", scriptName);
 				Console.WriteLine(e);
 			}
 		}
 
-		public void LoadScripts() {
-			foreach (Script s in Scripts) {
-				dynamic loadFunc;
-				if (s.ScriptScope.TryGetVariable("load", out loadFunc))
-					loadFunc();
+		public Script this[string script] {
+			get {
+				return this.Scripts[script];
 			}
 		}
 	}

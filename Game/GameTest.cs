@@ -29,49 +29,66 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 using System;
-using ChronosEngine;
-using OpenTK.Graphics.OpenGL;
-using OpenTK;
-using ChronosEngine.Interfaces;
-using ChronosEngine.Render2D;
-using System.Drawing;
 using System.Collections.Generic;
-using ChronosEngine.Scripting;
+using System.Drawing;
+using System.Windows.Forms;
+using ChronosEngine;
+using ChronosEngine.Camera;
+using ChronosEngine.Primitives3D;
+using ChronosEngine.Shaders;
+using ChronosEngine.Structures;
 using ChronosEngine.Textures;
+using Game.Shaders;
+using OpenTK;
+using OpenTK.Graphics;
+using OpenTK.Graphics.OpenGL;
+using OpenTK.Input;
 
 namespace Game {
 	public class GameTest : ChronoGame {
-		private IRenderer2D Renderer { get; set; }
+		Shader shader;
+		Mesh mesh;
+		Texture2D texture;
 
-		public List<IGameObject> GameObjects = new List<IGameObject>();
-
-		public ScriptManager ScriptManager;
+		private int cell_size = 2;
+		private int grid_size = 256;
 
 		public GameTest() : base() {
-			Renderer = new ImmediateRenderer2D();
-			ScriptManager = new ScriptManager();
 		}
-
 		public override void OnLoad(EventArgs e) {
 			base.OnLoad(e);
+			this.SetClearColor(new Color4(0.0f, 0.15f, 0.3f, 1.0f));
+			this.Setup3D();
+			this.SetupQuaternionCamera3D(15f, new Vector2(.25f), CamMode.NoClip);
 
-			ScriptManager.AddScript("test");
+			shader = new RedShader();
 
-			ScriptManager.LoadScripts();
-			var texture = Texture2D.LoadTexture("platform1.png", true);
-			GameObjects.Add(new Sprite2D(Vector2.Zero, new Vector2(32, 32), new RectangleF(0, 0, 32, 32), texture, true));
+			Vertex3[] vertices = {
+				new Vertex3(new Vector3(-1f, -1f, 0), new Vector2(0, 1)),
+				new Vertex3(new Vector3(0, 1f, 0), new Vector2(0.5f, 0.0f)),
+				new Vertex3(new Vector3(1f, -1f, 0), new Vector2(1, 1)),
+			};
+
+			mesh = new Mesh(vertices, 3);
+			texture = Texture2D.LoadTexture("brick1.jpg");
+		}
+
+		public override void OnUpdateFrame(FrameEventArgs e) {
+			GameEngine.Window.Title = "FPS: " +  Fps.GetFps(e.Time).ToString();
+
+			Camera.Update(e.Time);
+			shader.Update(this);
 		}
 
 		public override void OnRenderFrame(FrameEventArgs e) {
 			this.Clear();
+			this.SetCameraProjectionMatrix();
 
-			Renderer.Begin();
-			foreach (IGameObject obj in GameObjects)
-				obj.Render(Renderer);
-			Renderer.End();
+			shader.Bind();
+			texture.Bind(TextureUnit.Texture0);
+			mesh.Bind();
 
 			this.SwapBuffers();
 		}
 	}
 }
-

@@ -33,6 +33,7 @@ using ChronosEngine.Structures;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
+using OpenTK.Input;
 
 namespace ChronosEngine {
 	/// <summary>
@@ -67,6 +68,8 @@ namespace ChronosEngine {
 		/// Occurs when it is time to update a frame.
 		/// </summary>
 		new public event EventHandler<FrameEventArgs> UpdateFrame;
+
+		new public event EventHandler<MouseMoveEventArgs> MouseMove;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ChronosEngine.Window"/> class.
@@ -117,6 +120,11 @@ namespace ChronosEngine {
 		protected override void OnUpdateFrame(FrameEventArgs e) {
 			if (UpdateFrame != null)
 				UpdateFrame.Invoke(this, e);
+		}
+
+		protected override void OnMouseMove(MouseMoveEventArgs e) {
+			if (MouseMove != null)
+				MouseMove.Invoke(this, e);
 		}
 	}
 }

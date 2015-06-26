@@ -33,35 +33,25 @@ using Microsoft.Scripting.Hosting;
 
 namespace ChronosEngine.Scripting {
 	public class Script {
-		/// <summary>
-		/// Gets the source code of the script.
-		/// </summary>
-		/// <value>The source code.</value>
-		public string SourceCode { get; }
+		public CompiledCode CompiledScript { get; }
 
-		/// <summary>
-		/// Gets the scripting scope.
-		/// </summary>
-		/// <value>The scripting scope.</value>
-		public ScriptScope ScriptScope { get; }
+		public ScriptManager ScriptManager { get; }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ChronosEngine.Scripting.Script"/> class.
 		/// </summary>
-		/// <param name="sourceCode">Source code.</param>
-		/// <param name="scriptEngine">Script engine.</param>
-		public Script(string sourceCode, ScriptEngine scriptEngine) {
-			this.SourceCode = sourceCode;
-			this.ScriptScope = scriptEngine.CreateScope();
-			this.LoadScript(scriptEngine);
+		public Script(string source, ScriptManager scriptManager) {
+			var script = scriptManager.ScriptingEngine.CreateScriptSourceFromFile(source);
+			CompiledScript = script.Compile();
+			this.ScriptManager = scriptManager;
 		}
 
 		/// <summary>
 		/// Loads the script.
 		/// </summary>
 		/// <param name="engine">Script engine.</param>
-		private void LoadScript(ScriptEngine scriptEngine) {
-			scriptEngine.Execute(this.SourceCode, this.ScriptScope);
+		public void LoadScript() {
+			CompiledScript.Execute(ScriptManager.ScriptScope);
 		}
 	}
 }

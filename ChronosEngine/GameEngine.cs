@@ -78,6 +78,7 @@ namespace ChronosEngine {
 			Window.Resize += OnResize;
 			Window.RenderFrame += OnRenderFrame;
 			Window.UpdateFrame += OnUpdateFrame;
+			Window.MouseMove += OnMouseMove;
 			Game = game;
 		}
 
@@ -154,6 +155,10 @@ namespace ChronosEngine {
 		}
 
 		#endregion
-	}
+
+		protected void OnMouseMove(object sender, MouseMoveEventArgs e) {
+			Game.OnMouseMove(e);
+		}
+    }
 }
 

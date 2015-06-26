@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChronosEngine", "ChronosEng
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tutorials", "Tutorials\Tutorials.csproj", "{459B8656-E060-47DF-918C-EEDBA97C1998}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChronoFileEditor", "FileViewer\ChronoFileEditor.csproj", "{42AF8DEC-0947-421D-80A1-BEF65D5F2438}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChronoFile", "ChronoFile\ChronoFile.csproj", "{F9C7ACAF-9710-4797-80BD-35E646E15727}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,6 +22,7 @@ Global
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{3B34F013-E2A7-4A55-A5F1-C0ACD73DE2C6}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{3B34F013-E2A7-4A55-A5F1-C0ACD73DE2C6}.Debug|Any CPU.Build.0 = Debug|x86
 		{3B34F013-E2A7-4A55-A5F1-C0ACD73DE2C6}.Debug|x86.ActiveCfg = Debug|x86
 		{3B34F013-E2A7-4A55-A5F1-C0ACD73DE2C6}.Debug|x86.Build.0 = Debug|x86
 		{3B34F013-E2A7-4A55-A5F1-C0ACD73DE2C6}.Release|Any CPU.ActiveCfg = Release|x86
@@ -39,6 +44,22 @@ Global
 		{459B8656-E060-47DF-918C-EEDBA97C1998}.Release|Any CPU.Build.0 = Release|Any CPU
 		{459B8656-E060-47DF-918C-EEDBA97C1998}.Release|x86.ActiveCfg = Release|Any CPU
 		{459B8656-E060-47DF-918C-EEDBA97C1998}.Release|x86.Build.0 = Release|Any CPU
+		{42AF8DEC-0947-421D-80A1-BEF65D5F2438}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42AF8DEC-0947-421D-80A1-BEF65D5F2438}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42AF8DEC-0947-421D-80A1-BEF65D5F2438}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{42AF8DEC-0947-421D-80A1-BEF65D5F2438}.Debug|x86.Build.0 = Debug|Any CPU
+		{42AF8DEC-0947-421D-80A1-BEF65D5F2438}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42AF8DEC-0947-421D-80A1-BEF65D5F2438}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42AF8DEC-0947-421D-80A1-BEF65D5F2438}.Release|x86.ActiveCfg = Release|Any CPU
+		{42AF8DEC-0947-421D-80A1-BEF65D5F2438}.Release|x86.Build.0 = Release|Any CPU
+		{F9C7ACAF-9710-4797-80BD-35E646E15727}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9C7ACAF-9710-4797-80BD-35E646E15727}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9C7ACAF-9710-4797-80BD-35E646E15727}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F9C7ACAF-9710-4797-80BD-35E646E15727}.Debug|x86.Build.0 = Debug|Any CPU
+		{F9C7ACAF-9710-4797-80BD-35E646E15727}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9C7ACAF-9710-4797-80BD-35E646E15727}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9C7ACAF-9710-4797-80BD-35E646E15727}.Release|x86.ActiveCfg = Release|Any CPU
+		{F9C7ACAF-9710-4797-80BD-35E646E15727}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

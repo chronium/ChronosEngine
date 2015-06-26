@@ -191,6 +191,15 @@ namespace ChronosEngine.Shaders {
 			GenBuffers();
 		}
 
+		public Shader(string name) :
+			this(String.Format("Assets/Shaders/{0}/{0}.vert", name), String.Format("Assets/Shaders/{0}/{0}.frag", name), true)
+        {
+		}
+
+		public void Bind() {
+			GL.UseProgram(this.ProgramID);
+		}
+
 		public static T LoadShader<T>(string name) where T: Shader {
 			return (T)Activator.CreateInstance(typeof(T), new object[] { String.Format("Assets/Shaders/{0}/{0}.vert", name), String.Format("Assets/Shaders/{0}/{0}.frag", name), true });
 		}
@@ -208,6 +217,8 @@ namespace ChronosEngine.Shaders {
 			public int size = 0;
 			public ActiveAttribType type;
 		}
-	}
+
+		public abstract void Update(ChronoGame game);
+    }
 }
 

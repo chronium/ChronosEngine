@@ -42,7 +42,7 @@ namespace ChronosEngine.Textures {
 		/// </summary>
 		/// <value>The texture ID.</value>
 		public int TextureID { get; private set; }
-		public Vector2 Dimensions { get; private set; }
+		public Vector2 Size { get; private set; }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ChronosEngine.Textures.Texture2D"/> class.
@@ -61,7 +61,7 @@ namespace ChronosEngine.Textures {
 		public static Texture2D LoadTexture(string path, bool nearest = false) {
 			var image = loadImage(GetAssetPath(path), nearest);
             var tex = new Texture2D(image.Item2);
-			tex.Dimensions = image.Item1;
+			tex.Size = image.Item1;
 			return tex;
 		}
 
@@ -78,7 +78,7 @@ namespace ChronosEngine.Textures {
 			BitmapData data = image.LockBits(new System.Drawing.Rectangle(0, 0, image.Width, image.Height),
 				                  ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
-			GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, data.Width, data.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
+			GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba8, data.Width, data.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
 
 			image.UnlockBits(data);
 
@@ -96,6 +96,11 @@ namespace ChronosEngine.Textures {
 			return texID;
 		}
 
+		public void Bind(TextureUnit unit) {
+			GL.ActiveTexture(unit);
+			GL.BindTexture(TextureTarget.Texture2D, this.TextureID);
+		}
+
 		/// <summary>
 		/// Loads the image.
 		/// </summary>
@@ -107,7 +112,7 @@ namespace ChronosEngine.Textures {
 				Image file = Image.FromFile(filename);
 				return new Tuple<Vector2, int>(new Vector2(file.Width, file.Height), loadImage(new Bitmap(file), nearest));
 			}
-			catch (FileNotFoundException e) {
+			catch (FileNotFoundException) {
 				return new Tuple<Vector2, int>(Vector2.Zero, -1);
 			}
 		}
