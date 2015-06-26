@@ -17,3 +17,5 @@ Microsoft.*
 
 *.exe
 obj/
+
+.suo
