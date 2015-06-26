@@ -71,9 +71,7 @@ namespace ChronosEngine.Scripting {
 
 		public void LoadScripts() {
 			foreach (Script s in Scripts) {
-				dynamic loadFunc;
-				if (s.ScriptScope.TryGetVariable("load", out loadFunc))
-					loadFunc();
+				((dynamic)s.ScriptScope).load();
 			}
 		}
 	}
