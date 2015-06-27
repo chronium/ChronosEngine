@@ -34,6 +34,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using ChronosEngine;
 using ChronosEngine.Camera;
+using ChronosEngine.Models3D;
 using ChronosEngine.Primitives3D;
 using ChronosEngine.Shaders;
 using ChronosEngine.Structures;
@@ -47,11 +48,8 @@ using OpenTK.Input;
 namespace Game {
 	public class GameTest : ChronoGame {
 		Shader shader;
-		Mesh mesh;
+		Model model;
 		Texture2D texture;
-
-		private int cell_size = 2;
-		private int grid_size = 256;
 
 		public GameTest() : base() {
 		}
@@ -61,15 +59,9 @@ namespace Game {
 			this.Setup3D();
 			this.SetupQuaternionCamera3D(15f, new Vector2(.25f), CamMode.NoClip);
 
-			shader = new RedShader();
+			shader = new PassthroughShader();
 
-			Vertex3[] vertices = {
-				new Vertex3(new Vector3(-1f, -1f, 0), new Vector2(0, 1)),
-				new Vertex3(new Vector3(0, 1f, 0), new Vector2(0.5f, 0.0f)),
-				new Vertex3(new Vector3(1f, -1f, 0), new Vector2(1, 1)),
-			};
-
-			mesh = new Mesh(vertices, 3);
+			model = ModelLoader.Load("cube.obj");
 			texture = Texture2D.LoadTexture("brick1.jpg");
 		}
 
@@ -86,7 +78,7 @@ namespace Game {
 
 			shader.Bind();
 			texture.Bind(TextureUnit.Texture0);
-			mesh.Bind();
+			model.Mesh.Bind();
 
 			this.SwapBuffers();
 		}

@@ -46,7 +46,7 @@ namespace ChronosEngine.Camera {
 			m_Mouse = moused;
 			m_Keyboard = keyd;
 			m_ParentGame = game;
-			MouseRotation = new Vector2(0, 0);
+			MouseRotation = new Vector2(MathHelper.DegreesToRadians(180), 0);
 			Movement = new Vector3(0, 0, 0);
 			MouseLookEnabled = mouseLook;
 

@@ -13,10 +13,10 @@ namespace ChronosEngine.Primitives3D {
 	public class Mesh {
 		public int VertexBufferObject { get; set; }
 		public int[] VertexArrayBuffers { get; set; }
-		public int NumVertices { get; set; }
+		public int DrawCount { get; set; }
 
-		public Mesh(Vertex3[] vertices, int numVertices) {
-			this.NumVertices = numVertices;
+		public Mesh(Vertex3[] vertices, int numVertices, uint[] inidices, int numIndices) {
+			this.DrawCount = numIndices;
 			this.VertexArrayBuffers = new int[(int)Buffers.num_buffers];
 
 			this.VertexBufferObject = GL.GenVertexArray();
@@ -32,17 +32,18 @@ namespace ChronosEngine.Primitives3D {
 
 			GL.GenBuffers((int)Buffers.num_buffers, VertexArrayBuffers);
 
-			GL.BindBuffer(BufferTarget.ArrayBuffer, VertexArrayBuffers[(int)Buffers.position_buffer]);
-			GL.BufferData(BufferTarget.ArrayBuffer, numVertices * Vector3.SizeInBytes, pos.ToArray(), BufferUsageHint.StaticDraw);
+			GL.BindBuffer(BufferTarget.ArrayBuffer, VertexArrayBuffers[(int)Buffers.vertex_buffer]);
+			GL.BufferData(BufferTarget.ArrayBuffer, numVertices * Vertex3.Stride, vertices, BufferUsageHint.StaticDraw);
 
 			GL.EnableVertexAttribArray(0);
-			GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 0, 0);
-
-			GL.BindBuffer(BufferTarget.ArrayBuffer, VertexArrayBuffers[(int)Buffers.texcoord_buffer]);
-			GL.BufferData(BufferTarget.ArrayBuffer, numVertices * Vector2.SizeInBytes, texcoord.ToArray(), BufferUsageHint.StaticDraw);
-
+			GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, Vertex3.Stride, 0);
 			GL.EnableVertexAttribArray(1);
-			GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 0, 0);
+			GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, Vertex3.Stride, Vector3.SizeInBytes);
+			GL.EnableVertexAttribArray(2);
+			GL.VertexAttribPointer(2, 4, VertexAttribPointerType.Float, false, Vertex3.Stride, Vector3.SizeInBytes + Vector2.SizeInBytes);
+
+			GL.BindBuffer(BufferTarget.ElementArrayBuffer, VertexArrayBuffers[(int)Buffers.index_buffer]);
+			GL.BufferData(BufferTarget.ElementArrayBuffer, numIndices * sizeof(uint), inidices.ToArray(), BufferUsageHint.StaticDraw);
 
 			GL.BindVertexArray(0);
 		}
@@ -53,13 +54,13 @@ namespace ChronosEngine.Primitives3D {
 
 		private void Draw() {
 			GL.BindVertexArray(VertexBufferObject);
-			GL.DrawArrays(PrimitiveType.Triangles, 0, NumVertices);
+			GL.DrawElements(PrimitiveType.Triangles, DrawCount, DrawElementsType.UnsignedInt, 0);
 			GL.BindVertexArray(0);
 		}
 
 		internal enum Buffers {
-			position_buffer,
-			texcoord_buffer,
+			vertex_buffer,
+			index_buffer,
 			num_buffers,
 		}
 	}

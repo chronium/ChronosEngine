@@ -56,6 +56,8 @@
     <Compile Include="FpsCounter.cs" />
     <Compile Include="Helpers\HashHelper.cs" />
     <Compile Include="Interfaces\ICamera.cs" />
+    <Compile Include="Models3D\Model.cs" />
+    <Compile Include="Models3D\ModelLoader.cs" />
     <Compile Include="Primitives3D\Mesh.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GameEngine.cs" />
