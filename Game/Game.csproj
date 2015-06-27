@@ -51,7 +51,8 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GameTest.cs" />
-    <Compile Include="Shaders\RedShader.cs" />
+    <Compile Include="Shaders\AmbientShader.cs" />
+    <Compile Include="Shaders\PassthroughShader.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

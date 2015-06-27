@@ -47,7 +47,8 @@ using OpenTK.Input;
 
 namespace Game {
 	public class GameTest : ChronoGame {
-		Shader shader;
+		Shader ambientShader;
+		Shader tempLightShader;
 		Model model;
 		Texture2D texture;
 
@@ -57,9 +58,11 @@ namespace Game {
 			base.OnLoad(e);
 			this.SetClearColor(new Color4(0.0f, 0.15f, 0.3f, 1.0f));
 			this.Setup3D();
-			this.SetupQuaternionCamera3D(15f, new Vector2(.25f), CamMode.NoClip);
+			this.SetupQuaternionCamera3D(4f, new Vector2(.25f), CamMode.NoClip);
+			this.CullFaces(CullFaceMode.Back);
 
-			shader = new PassthroughShader();
+			ambientShader = new AmbientShader();
+			tempLightShader = new PassthroughShader();
 
 			model = ModelLoader.Load("cube.obj");
 			texture = Texture2D.LoadTexture("brick1.jpg");
@@ -69,16 +72,25 @@ namespace Game {
 			GameEngine.Window.Title = "FPS: " +  Fps.GetFps(e.Time).ToString();
 
 			Camera.Update(e.Time);
-			shader.Update(this);
+			ambientShader.Update(this);
+			tempLightShader.Update(this);
 		}
 
 		public override void OnRenderFrame(FrameEventArgs e) {
 			this.Clear();
 			this.SetCameraProjectionMatrix();
 
-			shader.Bind();
+			ambientShader.Bind();
 			texture.Bind(TextureUnit.Texture0);
 			model.Mesh.Bind();
+
+			this.Enable3DBlend();
+
+			tempLightShader.Bind();
+			texture.Bind(TextureUnit.Texture0);
+			model.Mesh.Bind();
+
+			this.Disable3DBlend();
 
 			this.SwapBuffers();
 		}

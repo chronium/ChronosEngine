@@ -41,6 +41,8 @@ namespace ChronosEngine.Primitives3D {
 			GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, Vertex3.Stride, Vector3.SizeInBytes);
 			GL.EnableVertexAttribArray(2);
 			GL.VertexAttribPointer(2, 4, VertexAttribPointerType.Float, false, Vertex3.Stride, Vector3.SizeInBytes + Vector2.SizeInBytes);
+			GL.EnableVertexAttribArray(3);
+			GL.VertexAttribPointer(3, 3, VertexAttribPointerType.Float, false, Vertex3.Stride, Vector3.SizeInBytes + Vector2.SizeInBytes + Vector4.SizeInBytes);
 
 			GL.BindBuffer(BufferTarget.ElementArrayBuffer, VertexArrayBuffers[(int)Buffers.index_buffer]);
 			GL.BufferData(BufferTarget.ElementArrayBuffer, numIndices * sizeof(uint), inidices.ToArray(), BufferUsageHint.StaticDraw);

@@ -113,11 +113,25 @@ namespace ChronosEngine {
 		public void Enable(EnableCap cap) {
 			GL.Enable(cap);
 		}
-		public void SetBlendMode() {
+		public void SetBlendMode(BlendingFactorSrc src, BlendingFactorDest dest) {
 			GL.Enable(EnableCap.Blend);
-			GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+			GL.BlendFunc(src, dest);
 		}
-
+		public void Enable3DBlend() {
+			GL.Enable(EnableCap.Blend);
+			GL.BlendFunc(BlendingFactorSrc.One, BlendingFactorDest.One);
+			GL.DepthMask(false);
+			GL.DepthFunc(DepthFunction.Equal);
+		}
+		public void Disable3DBlend() {
+			GL.DepthFunc(DepthFunction.Less);
+			GL.DepthMask(true);
+			GL.Disable(EnableCap.Blend);
+		}
+		public void CullFaces(CullFaceMode mode) {
+			GL.CullFace(mode);
+			GL.Enable(EnableCap.CullFace);
+		}
 		public void Clear() {
 			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 		}
