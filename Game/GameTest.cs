@@ -62,7 +62,7 @@ namespace Game {
 			this.CullFaces(CullFaceMode.Back);
 
 			ambientShader = new AmbientShader();
-			tempLightShader = new PassthroughShader();
+			tempLightShader = new DirectionalLightingShader();
 
 			model = ModelLoader.Load("cube.obj");
 			texture = Texture2D.LoadTexture("brick1.jpg");
