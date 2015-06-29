@@ -15,9 +15,12 @@ namespace ChronosEngine.Primitives3D {
 		public int[] VertexArrayBuffers { get; set; }
 		public int DrawCount { get; set; }
 
-		public Mesh(Vertex3[] vertices, int numVertices, uint[] inidices, int numIndices) {
+		public bool Quad { get; set; }
+
+		public Mesh(Vertex3[] vertices, int numVertices, uint[] inidices, int numIndices, bool quad) {
 			this.DrawCount = numIndices;
 			this.VertexArrayBuffers = new int[(int)Buffers.num_buffers];
+			this.Quad = quad;
 
 			this.VertexBufferObject = GL.GenVertexArray();
 			GL.BindVertexArray(VertexBufferObject);
@@ -56,7 +59,7 @@ namespace ChronosEngine.Primitives3D {
 
 		private void Draw() {
 			GL.BindVertexArray(VertexBufferObject);
-			GL.DrawElements(PrimitiveType.Triangles, DrawCount, DrawElementsType.UnsignedInt, 0);
+			GL.DrawElements(!Quad ? PrimitiveType.Triangles : PrimitiveType.Quads, DrawCount, DrawElementsType.UnsignedInt, 0);
 			GL.BindVertexArray(0);
 		}
 

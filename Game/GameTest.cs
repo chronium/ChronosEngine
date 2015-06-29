@@ -50,6 +50,7 @@ namespace Game {
 		Shader ambientShader;
 		Shader tempLightShader;
 		Model model;
+		Model road;
 		Texture2D texture;
 
 		public GameTest() : base() {
@@ -65,7 +66,8 @@ namespace Game {
 			tempLightShader = new DirectionalLightingShader();
 
 			model = ModelLoader.Load("cube.obj");
-			texture = Texture2D.LoadTexture("brick1.jpg");
+			road = ModelLoader.Load("road.obj");
+			texture = Texture2D.LoadTexture("RoadTexture.png");
 		}
 
 		public override void OnUpdateFrame(FrameEventArgs e) {
@@ -82,13 +84,15 @@ namespace Game {
 
 			ambientShader.Bind();
 			texture.Bind(TextureUnit.Texture0);
-			model.Mesh.Bind();
+			//model.Mesh.Bind();
+			road.Mesh.Bind();
 
 			this.Enable3DBlend();
 
 			tempLightShader.Bind();
 			texture.Bind(TextureUnit.Texture0);
 			model.Mesh.Bind();
+			road.Mesh.Bind();
 
 			this.Disable3DBlend();
 

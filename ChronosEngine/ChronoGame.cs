@@ -54,12 +54,12 @@ namespace ChronosEngine {
 		/// <param name="title">Window title.</param>
 		public ChronoGame(string title = "Untitled") {
 			this.GameEngine = new GameEngine(new Resolution(800, 600), new Resolution(800, 600), title, this);
-			DefaultGlobals.OrthographicProjection = Matrix4.CreateOrthographic(GameEngine.GameResolution.Width, -GameEngine.GameResolution.Height, 256f, -256f);
+			DefaultGlobals.OrthographicProjection = Matrix4.CreateOrthographic(GameEngine.GameResolution.Width, GameEngine.GameResolution.Height, 256f, -256f);
 		}
 		
 		public ChronoGame(Resolution resolution, string title = "Untitled") {
 			this.GameEngine = new GameEngine(resolution, resolution, title, this);
-			DefaultGlobals.OrthographicProjection = Matrix4.CreateOrthographic(GameEngine.GameResolution.Width, -GameEngine.GameResolution.Height, 256f, -256f);
+			DefaultGlobals.OrthographicProjection = Matrix4.CreateOrthographic(GameEngine.GameResolution.Width, GameEngine.GameResolution.Height, 256f, -256f);
 		}
 
 		public void Run() {

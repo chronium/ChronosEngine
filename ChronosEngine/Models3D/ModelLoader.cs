@@ -21,6 +21,8 @@ namespace ChronosEngine.Models3D {
 
 			List<uint> indices = new List<uint>();
 
+			bool quads = false;
+
 			foreach (string line in lines) {
 				string[] split = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -38,25 +40,18 @@ namespace ChronosEngine.Models3D {
 							texCoords.Add(new Vector2(float.Parse(split[1]), float.Parse(split[2])));
 							break;
 						case "f":
-							Vertex3 temp1 = ParseVertex(split[1], positions, texCoords, normals);
-							Vertex3 temp2 = ParseVertex(split[2], positions, texCoords, normals);
-							Vertex3 temp3 = ParseVertex(split[3], positions, texCoords, normals);
-
-							if (!vertices.Contains(temp1))
-								vertices.Add(temp1);
-							if (!vertices.Contains(temp2))
-								vertices.Add(temp2);
-							if (!vertices.Contains(temp3))
-								vertices.Add(temp3);
-							indices.Add((uint)vertices.IndexOf(temp1));
-							indices.Add((uint)vertices.IndexOf(temp2));
-							indices.Add((uint)vertices.IndexOf(temp3));
-
+							for (int i = 1; i < split.Length; i++) {
+								Vertex3 temp = ParseVertex(split[i], positions, texCoords, normals);
+								if (!vertices.Contains(temp))
+									vertices.Add(temp);
+								indices.Add((uint)vertices.IndexOf(temp));
+							}
+							quads = split.Length > 4;
 							break;
 					}
 			}
 
-			return new Model(new Mesh(vertices.ToArray(), vertices.Count, indices.ToArray(), indices.Count));
+			return new Model(new Mesh(vertices.ToArray(), vertices.Count, indices.ToArray(), indices.Count, quads));
 		}
 
 		public static Vertex3 ParseVertex(string vertex, List<Vector3> positions, List<Vector2> texCoords, List<Vector3> normals) {
