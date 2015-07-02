@@ -10,7 +10,6 @@
 *.resources
 test-results/
 
-*.dll
 *.mdb
 
 Microsoft.*
@@ -19,3 +18,5 @@ Microsoft.*
 obj/
 
 *.suo
+
+.vs/

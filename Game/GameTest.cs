@@ -82,11 +82,13 @@ namespace Game {
 		public override void OnRenderFrame(FrameEventArgs e) {
 			this.Clear();
 			this.SetCameraProjectionMatrix();
-			
+
+			ambientShader.Bind();
 			road.Bind(ambientShader);
 
 			this.Enable3DBlend();
 
+			tempLightShader.Bind();
 			road.Bind(tempLightShader);
 
 			this.Disable3DBlend();

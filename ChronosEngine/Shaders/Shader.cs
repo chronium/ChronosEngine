@@ -219,7 +219,7 @@ namespace ChronosEngine.Shaders {
 			public ActiveAttribType type;
 		}
 
-		public abstract void Bind(ChronoGame game, Model model);
-    }
+        public abstract void Update(ChronoGame game, Model model);
+	}
 }
 

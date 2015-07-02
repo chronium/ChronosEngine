@@ -40,7 +40,7 @@ namespace ChronosEngine.Models3D {
 		}
 
 		public void Bind(Shader shader) {
-			shader.Bind(ChronoGame.Instance, this);
+			shader.Update(ChronoGame.Instance, this);
 			Texture.Bind(TextureUnit.Texture0);
 			Mesh.Bind();
 		}

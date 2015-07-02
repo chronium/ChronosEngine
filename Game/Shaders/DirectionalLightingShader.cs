@@ -16,8 +16,7 @@ namespace Game.Shaders {
 			GL.BindAttribLocation(this.ProgramID, 3, "vnormal");
 		}
 
-		public override void Bind(ChronoGame game, Model model) {
-			GL.UseProgram(this.ProgramID);
+		public override void Update(ChronoGame game, Model model) {
 			Matrix4 viewProjection;
 			game.Camera.GetViewProjectionMatrix(out viewProjection);
 			Matrix4 modelViewProj = model.ModelMatrix * viewProjection;
