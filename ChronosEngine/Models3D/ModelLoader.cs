@@ -6,11 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 using ChronosEngine.Primitives3D;
 using ChronosEngine.Structures;
+using ChronosEngine.Textures;
 using OpenTK;
 
 namespace ChronosEngine.Models3D {
 	public class ModelLoader : AssetProvider {
-		public static Model Load(string modelName) {
+		public static Model Load(string modelName, Texture2D texture) {
 			string path = GetAssetPath(modelName);
 			string[] lines = File.ReadAllLines(path);
 
@@ -51,7 +52,7 @@ namespace ChronosEngine.Models3D {
 					}
 			}
 
-			return new Model(new Mesh(vertices.ToArray(), vertices.Count, indices.ToArray(), indices.Count, quads));
+			return new Model(new Mesh(vertices.ToArray(), vertices.Count, indices.ToArray(), indices.Count, quads), texture);
 		}
 
 		public static Vertex3 ParseVertex(string vertex, List<Vector3> positions, List<Vector2> texCoords, List<Vector3> normals) {

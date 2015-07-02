@@ -29,6 +29,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using ChronosEngine.Camera;
 using ChronosEngine.Interfaces;
@@ -47,6 +48,7 @@ namespace ChronosEngine {
 		public GameEngine GameEngine { get; }
 
 		public ICamera Camera { get; set; }
+		public static ChronoGame Instance { get; set; }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ChronosEngine.ChronoGame"/> class.
@@ -55,11 +57,15 @@ namespace ChronosEngine {
 		public ChronoGame(string title = "Untitled") {
 			this.GameEngine = new GameEngine(new Resolution(800, 600), new Resolution(800, 600), title, this);
 			DefaultGlobals.OrthographicProjection = Matrix4.CreateOrthographic(GameEngine.GameResolution.Width, GameEngine.GameResolution.Height, 256f, -256f);
+
+			ChronoGame.Instance = this;
 		}
 		
 		public ChronoGame(Resolution resolution, string title = "Untitled") {
 			this.GameEngine = new GameEngine(resolution, resolution, title, this);
 			DefaultGlobals.OrthographicProjection = Matrix4.CreateOrthographic(GameEngine.GameResolution.Width, GameEngine.GameResolution.Height, 256f, -256f);
+
+			ChronoGame.Instance = this;
 		}
 
 		public void Run() {
@@ -159,7 +165,7 @@ namespace ChronosEngine {
 		public void SetCameraProjectionMatrix() {
 			GL.MatrixMode(MatrixMode.Modelview);
 			Matrix4 proj;
-			Camera.GetModelviewMatrix(out proj);
+			Camera.GetViewMatrix(out proj);
 			GL.LoadMatrix(ref proj);
 		}
 	}

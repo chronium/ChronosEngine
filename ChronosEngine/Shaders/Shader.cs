@@ -34,6 +34,7 @@ using OpenTK.Graphics.OpenGL;
 using System.IO;
 using System.Text;
 using System.Linq;
+using ChronosEngine.Models3D;
 
 namespace ChronosEngine.Shaders {
 	public abstract class Shader {
@@ -218,7 +219,7 @@ namespace ChronosEngine.Shaders {
 			public ActiveAttribType type;
 		}
 
-		public abstract void Update(ChronoGame game);
+		public abstract void Bind(ChronoGame game, Model model);
     }
 }
 

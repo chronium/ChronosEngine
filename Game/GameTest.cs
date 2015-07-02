@@ -65,34 +65,29 @@ namespace Game {
 			ambientShader = new AmbientShader();
 			tempLightShader = new DirectionalLightingShader();
 
-			model = ModelLoader.Load("cube.obj");
-			road = ModelLoader.Load("road.obj");
 			texture = Texture2D.LoadTexture("RoadTexture.png");
+
+			model = ModelLoader.Load("cube.obj", texture);
+			road = ModelLoader.Load("road.obj", texture);
 		}
 
 		public override void OnUpdateFrame(FrameEventArgs e) {
 			GameEngine.Window.Title = "FPS: " +  Fps.GetFps(e.Time).ToString();
 
 			Camera.Update(e.Time);
-			ambientShader.Update(this);
-			tempLightShader.Update(this);
+
+			road.Position -= new Vector3(0, (float) e.Time, 0);
 		}
 
 		public override void OnRenderFrame(FrameEventArgs e) {
 			this.Clear();
 			this.SetCameraProjectionMatrix();
-
-			ambientShader.Bind();
-			texture.Bind(TextureUnit.Texture0);
-			//model.Mesh.Bind();
-			road.Mesh.Bind();
+			
+			road.Bind(ambientShader);
 
 			this.Enable3DBlend();
 
-			tempLightShader.Bind();
-			texture.Bind(TextureUnit.Texture0);
-			model.Mesh.Bind();
-			road.Mesh.Bind();
+			road.Bind(tempLightShader);
 
 			this.Disable3DBlend();
 

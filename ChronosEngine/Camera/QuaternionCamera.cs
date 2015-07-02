@@ -140,15 +140,15 @@ namespace ChronosEngine.Camera {
 			matrix = Matrix4.CreatePerspectiveFieldOfView((float)(FieldOfView * Math.PI / 180.0), AspectRatio, ZNear, ZFar);
 		}
 
-		public void GetModelviewMatrix(out Matrix4 matrix) {
+		public void GetViewMatrix(out Matrix4 matrix) {
 			var translationMatrix = Matrix4.CreateTranslation(-Position);
 			var rotationMatrix = Matrix4.CreateFromQuaternion(Orientation);
 			Matrix4.Mult(ref translationMatrix, ref rotationMatrix, out matrix);
 		}
-		public void GetModelviewProjectionMatrix(out Matrix4 result) {
+		public void GetViewProjectionMatrix(out Matrix4 result) {
 			Matrix4 modelview;
 			GetProjectionMatrix(out result);
-			GetModelviewMatrix(out modelview);
+			GetViewMatrix(out modelview);
 			Matrix4.Mult(ref modelview, ref result, out result);
 		}
 

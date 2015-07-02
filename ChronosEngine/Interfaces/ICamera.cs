@@ -27,7 +27,7 @@ namespace ChronosEngine.Interfaces {
 		/// <param name="matrix">
 		/// A <see cref="Matrix4"/> containing the Modelview Matrix
 		/// </param>
-		void GetModelviewMatrix(out Matrix4 matrix);
+		void GetViewMatrix(out Matrix4 matrix);
 
 		/// <summary>
 		/// Returns the Modelview Matrix multiplied by the Projection matrix
@@ -35,7 +35,7 @@ namespace ChronosEngine.Interfaces {
 		/// <param name="result">
 		/// A <see cref="Matrix4"/> containg the multiplied matrices
 		/// </param>
-		void GetModelviewProjectionMatrix(out Matrix4 matrix);
+		void GetViewProjectionMatrix(out Matrix4 matrix);
 
 		#endregion
 
