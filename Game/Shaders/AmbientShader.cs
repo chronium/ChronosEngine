@@ -15,7 +15,6 @@ namespace Game.Shaders {
 			base("Ambient") {
 			GL.UseProgram(this.ProgramID);
 			GL.Uniform1(this.GetUniform("diffuse"), 0);
-			GL.Uniform4(this.GetUniform("ambient"), new Vector4(.25f, .25f, .25f, 1));
 			GL.BindAttribLocation(this.ProgramID, 0, "vpos");
 			GL.BindAttribLocation(this.ProgramID, 1, "vtexcoord");
 			GL.BindAttribLocation(this.ProgramID, 2, "vertcolor");
@@ -28,6 +27,8 @@ namespace Game.Shaders {
 			Matrix4 modelViewProjection = model.ModelMatrix * viewProjection;
 
 			GL.UniformMatrix4(this.GetUniform("mvp"), false, ref modelViewProjection);
+
+			this.BindMaterial("material", model.Material);
 		}
 	}
 }

@@ -41,6 +41,8 @@ using OpenTK.Input;
 
 namespace ChronosEngine {
 	public class ChronoGame {
+		public static Vector3 UpTransform = new Vector3(1, -1, 1);
+
 		/// <summary>
 		/// Gets the game engine.
 		/// </summary>

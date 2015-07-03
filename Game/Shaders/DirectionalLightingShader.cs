@@ -1,4 +1,5 @@
 ﻿using ChronosEngine;
+using ChronosEngine.Camera;
 using ChronosEngine.Models3D;
 using ChronosEngine.Shaders;
 using OpenTK;
@@ -20,13 +21,25 @@ namespace Game.Shaders {
 			Matrix4 viewProjection;
 			game.Camera.GetViewProjectionMatrix(out viewProjection);
 			Matrix4 modelViewProj = model.ModelMatrix * viewProjection;
-			GL.UniformMatrix4(this.GetUniform("mvp"), false, ref modelViewProj);
+			GL.UniformMatrix4(this.GetUniform("MVP"), false, ref modelViewProj);
+		
+			Matrix4 modelView = model.ModelMatrix;
+			GL.UniformMatrix4(this.GetUniform("model"), false, ref modelView);
 
-			Matrix4 view;
-			game.Camera.GetViewMatrix(out view);
-			Matrix4 modelView = model.ModelMatrix * view;
+			this.BindMaterial("material", model.Material);
 
-			GL.UniformMatrix4(this.GetUniform("mv"), false, ref modelView);
+			var camPos = ((QuaternionCamera)game.Camera).Position;
+            GL.Uniform3(this.GetUniform("eyePos"), camPos);
+		}
+
+		public void BindDirectionalLight(string name, DirectionalLight light) {
+			this.BindBaseLight(name + ".base", light.baseLight);
+			GL.Uniform3(this.GetUniform(name + ".direction"), light.direction);
+		}
+
+		public void BindBaseLight(string name, BaseLight light) {
+			GL.Uniform3(this.GetUniform(name + ".color"), light.color);
+			GL.Uniform1(this.GetUniform(name + ".intensity"), light.intensity);
 		}
 	}
 }

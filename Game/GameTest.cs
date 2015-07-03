@@ -49,9 +49,11 @@ namespace Game {
 	public class GameTest : ChronoGame {
 		Shader ambientShader;
 		Shader tempLightShader;
-		Model model;
 		Model road;
+		Model road1;
 		Texture2D texture;
+
+		DirectionalLight light;
 
 		public GameTest() : base() {
 		}
@@ -67,29 +69,47 @@ namespace Game {
 
 			texture = Texture2D.LoadTexture("RoadTexture.png");
 
-			model = ModelLoader.Load("cube.obj", texture);
-			road = ModelLoader.Load("road.obj", texture);
+			var roadMesh = ModelLoader.LoadMesh("road.obj");
+			var roadMaterial = new Material() {
+				AmbientColor = new Vector4(0.125f, 0.125f, 0.125f, 1f),
+				SpecularIntensity = 2f,
+				SpecularPower = 64f,
+			};
+
+			road = new Model(roadMesh, texture, roadMaterial);
+			road1 = new Model(roadMesh, texture, roadMaterial);
+
+			road1.Position = new Vector3(2, 0, 0);
+
+			light = new DirectionalLight() {
+				baseLight = new BaseLight() {
+					color = new Vector3(1f, 1, 1),
+					intensity = 1f,
+				},
+				direction = new Vector3(1, 1, 1),
+			};
 		}
 
 		public override void OnUpdateFrame(FrameEventArgs e) {
 			GameEngine.Window.Title = "FPS: " +  Fps.GetFps(e.Time).ToString();
 
 			Camera.Update(e.Time);
-
-			road.Position -= new Vector3(0, (float) e.Time, 0);
 		}
-
+		
 		public override void OnRenderFrame(FrameEventArgs e) {
 			this.Clear();
 			this.SetCameraProjectionMatrix();
 
 			ambientShader.Bind();
 			road.Bind(ambientShader);
+			road1.Bind(ambientShader);
 
 			this.Enable3DBlend();
 
 			tempLightShader.Bind();
+			((DirectionalLightingShader)tempLightShader).BindDirectionalLight("directionalLight", light);
 			road.Bind(tempLightShader);
+            road1.Bind(tempLightShader);
 
 			this.Disable3DBlend();
 

@@ -53,6 +53,7 @@
     <Compile Include="GameTest.cs" />
     <Compile Include="Shaders\AmbientShader.cs" />
     <Compile Include="Shaders\DirectionalLightingShader.cs" />
+    <Compile Include="Shaders\Lighting.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

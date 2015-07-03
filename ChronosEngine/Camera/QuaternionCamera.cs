@@ -52,8 +52,8 @@ namespace ChronosEngine.Camera {
 
 			AspectRatio = 1.333f;
 			FieldOfView = 60;
-			ZNear = 0.1f;
-			ZFar = 64;
+			ZNear = 0.001f;
+			ZFar = 2561;
 
 			if (MouseLookEnabled) {
 				//Cursor.Hide();

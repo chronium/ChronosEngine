@@ -18,7 +18,7 @@ namespace ChronosEngine.Structures {
 			this.Pos = pos;
 			this.TexCoord = texCoord * new Vector2(1, -1);
 			this.Color = color;
-			this.Normal = normal * new Vector3(1, -1, 1);
+			this.Normal = normal;
 		}
 
 		public Vertex3(Vector3 pos, Vector2 texCoord, Vector4 color) :

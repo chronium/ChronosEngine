@@ -35,6 +35,7 @@ using System.IO;
 using System.Text;
 using System.Linq;
 using ChronosEngine.Models3D;
+using ChronosEngine.Structures;
 
 namespace ChronosEngine.Shaders {
 	public abstract class Shader {
@@ -220,6 +221,12 @@ namespace ChronosEngine.Shaders {
 		}
 
         public abstract void Update(ChronoGame game, Model model);
+
+		public void BindMaterial(string field, Material material) {
+			GL.Uniform4(this.GetUniform(field + ".ambient"), material.AmbientColor);
+			GL.Uniform1(this.GetUniform(field + ".specularIntensity"), material.SpecularIntensity);
+			GL.Uniform1(this.GetUniform(field + ".specularPower"), material.SpecularPower);
+		}
 	}
 }
 
