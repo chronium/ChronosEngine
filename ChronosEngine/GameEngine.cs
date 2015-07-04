@@ -104,7 +104,7 @@ namespace ChronosEngine {
 
 		#region OnLoad
 
-		/// <summary>
+		/// <summary>3
 		/// Setup OpenGL and load resources here.
 		/// </summary>
 		/// <param name="sender">Caller of the function</param>

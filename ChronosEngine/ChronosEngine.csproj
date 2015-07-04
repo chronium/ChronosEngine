@@ -28,6 +28,9 @@
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BulletSharp">
+      <HintPath>..\Game\bin\Debug\BulletSharp.dll</HintPath>
+    </Reference>
     <Reference Include="IronPython">
       <HintPath>..\..\..\Game\ChronosEngine\bin\Debug\IronPython.dll</HintPath>
     </Reference>

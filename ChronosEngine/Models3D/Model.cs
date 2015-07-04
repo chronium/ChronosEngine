@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BulletSharp;
 using ChronosEngine.Interfaces;
 using ChronosEngine.Primitives3D;
 using ChronosEngine.Shaders;
@@ -16,30 +17,22 @@ namespace ChronosEngine.Models3D {
 		public Mesh Mesh { get; set; }
 		public Texture2D Texture { get; set; }
 		public Material Material { get; set; }
-
-		public Vector3 Position { get; set; } = Vector3.Zero;
-		public Vector3 Rotation { get; set; } = Vector3.Zero;
+		public RigidBody RigidBody { get; set; }
 		public Vector3 Scale { get; set; } = Vector3.One;
-
-		public Matrix4 RotationMatrix {
-			get {
-				return Matrix4.CreateRotationX(Rotation.X) *
-					Matrix4.CreateRotationY(Rotation.Y) *
-					Matrix4.CreateRotationZ(Rotation.Z);
-			}
-		}
 
 		public Matrix4 ModelMatrix {
 			get {
-				return Matrix4.CreateTranslation(Position * ChronoGame.UpTransform) *
-					this.RotationMatrix * Matrix4.CreateScale(Scale);
+				Matrix4 temp;
+				RigidBody.GetWorldTransform(out temp);
+				return temp * Matrix4.CreateScale(Scale);
 			}
 		}
 		
-		public Model(Mesh mesh, Texture2D texture, Material material) {
+		public Model(Mesh mesh, Texture2D texture, Material material, RigidBody rigidBody) {
 			this.Mesh = mesh;
 			this.Texture = texture;
 			this.Material = material;
+			this.RigidBody = rigidBody;
 		}
 
 		public void Bind(Shader shader) {

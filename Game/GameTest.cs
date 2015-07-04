@@ -32,6 +32,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using BulletSharp;
 using ChronosEngine;
 using ChronosEngine.Camera;
 using ChronosEngine.Models3D;
@@ -50,8 +51,9 @@ namespace Game {
 		Shader ambientShader;
 		Shader tempLightShader;
 		Model road;
-		Model road1;
+		Model fall;
 		Texture2D texture;
+		Texture2D brick;
 
 		DirectionalLight light;
 
@@ -68,32 +70,63 @@ namespace Game {
 			tempLightShader = new DirectionalLightingShader();
 
 			texture = Texture2D.LoadTexture("RoadTexture.png");
+			brick = Texture2D.LoadTexture("brick1.jpg");
 
 			var roadMesh = ModelLoader.LoadMesh("road.obj");
+			var ballMesh = ModelLoader.LoadMesh("ball.obj");
 			var roadMaterial = new Material() {
 				AmbientColor = new Vector4(0.125f, 0.125f, 0.125f, 1f),
 				SpecularIntensity = 2f,
 				SpecularPower = 64f,
 			};
 
-			road = new Model(roadMesh, texture, roadMaterial);
-			road1 = new Model(roadMesh, texture, roadMaterial);
-
-			road1.Position = new Vector3(2, 0, 0);
-
 			light = new DirectionalLight() {
 				baseLight = new BaseLight() {
-					color = new Vector3(1f, 1, 1),
+					color = new Vector3(1, 1, 1),
 					intensity = 1f,
 				},
 				direction = new Vector3(1, 1, 1),
 			};
+
+			BroadphaseInterface broadphase = new DbvtBroadphase();
+			DefaultCollisionConfiguration config = new DefaultCollisionConfiguration();
+			CollisionDispatcher dispatcher = new CollisionDispatcher(config);
+			SequentialImpulseConstraintSolver solver = new SequentialImpulseConstraintSolver();
+			world = new DiscreteDynamicsWorld(dispatcher, broadphase, solver, config);
+			world.Gravity = new Vector3(0, -9.81f, 0);
+
+			CollisionShape groundShape = new BoxShape(1f, 0f, 1f);
+			DefaultMotionState groundMotionState = new DefaultMotionState(Matrix4.CreateTranslation(new Vector3(0, -1, 0)));
+			RigidBodyConstructionInfo groundRigidBodyCI = new RigidBodyConstructionInfo(0, groundMotionState, groundShape, new Vector3(0));
+			var groundRigidBody = new RigidBody(groundRigidBodyCI);
+			world.AddRigidBody(groundRigidBody);
+
+			road = new Model(roadMesh, texture, roadMaterial, groundRigidBody);
+
+			CollisionShape fallShape = new SphereShape(1);
+			DefaultMotionState fallMotionState = new DefaultMotionState(Matrix4.CreateTranslation(0, 50, 0));
+
+			float mass = 1;
+			Vector3 fallIntertia;
+			fallShape.CalculateLocalInertia(mass, out fallIntertia);
+
+			RigidBodyConstructionInfo fallRigidBodyCI = new RigidBodyConstructionInfo(mass, fallMotionState, fallShape, fallIntertia);
+			fallRigidBody = new RigidBody(fallRigidBodyCI);
+			world.AddRigidBody(fallRigidBody);
+			
+			fall = new Model(ballMesh, brick, roadMaterial, fallRigidBody);
+			fallRigidBody.ApplyTorqueImpulse(new Vector3(0, 0, 1f));
 		}
+
+		RigidBody fallRigidBody;
+		DiscreteDynamicsWorld world;
 
 		public override void OnUpdateFrame(FrameEventArgs e) {
 			GameEngine.Window.Title = "FPS: " +  Fps.GetFps(e.Time).ToString();
 
 			Camera.Update(e.Time);
+
+			world.StepSimulation((float)e.Time, 60, 1 / 60.0f);
 		}
 		
 		public override void OnRenderFrame(FrameEventArgs e) {
@@ -102,14 +135,14 @@ namespace Game {
 
 			ambientShader.Bind();
 			road.Bind(ambientShader);
-			road1.Bind(ambientShader);
+			fall.Bind(ambientShader);
 
 			this.Enable3DBlend();
-
+			
 			tempLightShader.Bind();
 			((DirectionalLightingShader)tempLightShader).BindDirectionalLight("directionalLight", light);
 			road.Bind(tempLightShader);
-            road1.Bind(tempLightShader);
+			fall.Bind(tempLightShader);
 
 			this.Disable3DBlend();
 
