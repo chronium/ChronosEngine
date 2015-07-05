@@ -12,8 +12,6 @@ test-results/
 
 *.mdb
 
-Microsoft.*
-
 *.exe
 obj/
 
