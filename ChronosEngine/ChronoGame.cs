@@ -52,6 +52,9 @@ namespace ChronosEngine {
 		public ICamera Camera { get; set; }
 		public static ChronoGame Instance { get; set; }
 
+		public KeyboardDevice Keyboard { get; set; }
+		public MouseDevice Mouse { get; set; }
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ChronosEngine.ChronoGame"/> class.
 		/// </summary>
@@ -61,6 +64,8 @@ namespace ChronosEngine {
 			DefaultGlobals.OrthographicProjection = Matrix4.CreateOrthographic(GameEngine.GameResolution.Width, GameEngine.GameResolution.Height, 256f, -256f);
 
 			ChronoGame.Instance = this;
+			this.Keyboard = this.GameEngine.Window.Keyboard;
+			this.Mouse = this.GameEngine.Window.Mouse;
 		}
 		
 		public ChronoGame(Resolution resolution, string title = "Untitled") {

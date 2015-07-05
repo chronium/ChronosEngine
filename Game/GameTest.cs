@@ -51,7 +51,6 @@ namespace Game {
 		Shader ambientShader;
 		Shader tempLightShader;
 		Model road;
-		Model fall;
 		Texture2D texture;
 		Texture2D brick;
 
@@ -94,8 +93,9 @@ namespace Game {
 			SequentialImpulseConstraintSolver solver = new SequentialImpulseConstraintSolver();
 			world = new DiscreteDynamicsWorld(dispatcher, broadphase, solver, config);
 			world.Gravity = new Vector3(0, -9.81f, 0);
+			world.DispatchInfo.AllowedCcdPenetration = 0.0001f;
 
-			CollisionShape groundShape = new BoxShape(1f, 0f, 1f);
+			CollisionShape groundShape = new BoxShape(6, 0, 6);
 			DefaultMotionState groundMotionState = new DefaultMotionState(Matrix4.CreateTranslation(new Vector3(0, -1, 0)));
 			RigidBodyConstructionInfo groundRigidBodyCI = new RigidBodyConstructionInfo(0, groundMotionState, groundShape, new Vector3(0));
 			var groundRigidBody = new RigidBody(groundRigidBodyCI);
@@ -103,28 +103,69 @@ namespace Game {
 
 			road = new Model(roadMesh, texture, roadMaterial, groundRigidBody);
 
-			CollisionShape fallShape = new SphereShape(1);
-			DefaultMotionState fallMotionState = new DefaultMotionState(Matrix4.CreateTranslation(0, 50, 0));
+			Matrix4 startMatrix = Matrix4.CreateTranslation(0, 4, 0);
+			ghostObject = new PairCachingGhostObject();
+			ghostObject.WorldTransform = startMatrix;
+			broadphase.OverlappingPairCache.SetInternalGhostPairCallback(new GhostPairCallback());
 
-			float mass = 1;
-			Vector3 fallIntertia;
-			fallShape.CalculateLocalInertia(mass, out fallIntertia);
+			ConvexShape capsule = new CapsuleShape(0.75f, 1.75f);
+			ghostObject.CollisionShape = capsule;
+			ghostObject.CollisionFlags = CollisionFlags.CharacterObject;
 
-			RigidBodyConstructionInfo fallRigidBodyCI = new RigidBodyConstructionInfo(mass, fallMotionState, fallShape, fallIntertia);
-			fallRigidBody = new RigidBody(fallRigidBodyCI);
-			world.AddRigidBody(fallRigidBody);
-			
-			fall = new Model(ballMesh, brick, roadMaterial, fallRigidBody);
-			fallRigidBody.ApplyTorqueImpulse(new Vector3(0, 0, 1f));
+			character = new KinematicCharacterController(ghostObject, capsule, .35f);
+			world.AddCollisionObject(ghostObject, CollisionFilterGroups.CharacterFilter, CollisionFilterGroups.StaticFilter | CollisionFilterGroups.DefaultFilter);
+			world.AddAction(character);
 		}
 
-		RigidBody fallRigidBody;
-		DiscreteDynamicsWorld world;
+		PairCachingGhostObject ghostObject;
+		KinematicCharacterController character;
+        DiscreteDynamicsWorld world;
 
-		public override void OnUpdateFrame(FrameEventArgs e) {
+		Vector3 Movement;
+		float Speed = 4f;
+
+		protected void UpdateMovement() {
+			Speed /= 60f;
+
+			if (Keyboard[Key.W] && !Keyboard[Key.S]) {
+				Movement.Z = 0;
+				Movement.Z -= Speed;
+			} else if (Keyboard[Key.S] && !Keyboard[Key.W]) {
+				Movement.Z = 0;
+				Movement.Z += Speed;
+			} else Movement.Z = 0.0f;
+
+			if (Keyboard[Key.A] && !Keyboard[Key.D]) {
+				Movement.X = 0.0f;
+				Movement.X -= Speed;
+			} else if (Keyboard[Key.D] && !Keyboard[Key.A]) {
+				Movement.X = 0.0f;
+				Movement.X += Speed;
+			} else
+				Movement.X = 0.0f;
+		}
+
+	public override void OnUpdateFrame(FrameEventArgs e) {
 			GameEngine.Window.Title = "FPS: " +  Fps.GetFps(e.Time).ToString();
 
-			Camera.Update(e.Time);
+			Camera.UpdateMouse(e.Time);
+			UpdateMovement();
+
+			Vector3 mov = Vector3.Transform(Movement, ((QuaternionCamera)Camera).TargetOrientationY.Inverted());
+			character.SetWalkDirection(mov);
+
+			if (character.OnGround)
+				if (Keyboard[Key.Space])
+					character.Jump();
+
+			if (Keyboard[Key.ShiftLeft] || Keyboard[Key.ShiftRight])
+				Speed = 6f;
+			else
+				Speed = 4f;
+
+			Matrix4 mat;
+			character.GhostObject.GetWorldTransform(out mat);
+			((QuaternionCamera)Camera).Position = mat.ExtractTranslation();
 
 			world.StepSimulation((float)e.Time, 60, 1 / 60.0f);
 		}
@@ -135,14 +176,12 @@ namespace Game {
 
 			ambientShader.Bind();
 			road.Bind(ambientShader);
-			fall.Bind(ambientShader);
 
 			this.Enable3DBlend();
 			
 			tempLightShader.Bind();
 			((DirectionalLightingShader)tempLightShader).BindDirectionalLight("directionalLight", light);
 			road.Bind(tempLightShader);
-			fall.Bind(tempLightShader);
 
 			this.Disable3DBlend();
 

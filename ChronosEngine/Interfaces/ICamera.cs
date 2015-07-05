@@ -12,6 +12,7 @@ namespace ChronosEngine.Interfaces {
 		/// A <see cref="System.Double"/> containg the amount of time since the last update
 		/// </param>
 		void Update(double time);
+		void UpdateMouse(double time);
 
 		/// <summary>
 		/// Returns the Projection matrix for this camera

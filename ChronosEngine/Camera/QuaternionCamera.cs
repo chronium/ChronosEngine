@@ -116,15 +116,18 @@ namespace ChronosEngine.Camera {
 
 		#region Public Methods
 
+		public void UpdateMouse(double time) {
+			if (MouseLookEnabled) {
+				UpdateRotations(time);
+			}
+		}
+
 		public void Update(double time) {
 			if (time == 0)
 				return;
 
-			if (MouseLookEnabled) {
-				UpdateRotations(time);
-			}
+			UpdateMouse(time);
 			UpdateMovement(time);
-
 
 			if (TargetOrientation != Orientation) {
 				Orientation = Quaternion.Slerp(Orientation, TargetOrientation, (float)time);
