@@ -92,34 +92,6 @@ namespace ChronosEngine.Shaders {
 
 			GL.GetProgram(ProgramID, GetProgramParameterName.ActiveAttributes, out AttributeCount);
 			GL.GetProgram(ProgramID, GetProgramParameterName.ActiveUniforms, out UniformCount);
-
-			for (int i = 0; i < AttributeCount; i++) {
-				AttributeInfo info = new AttributeInfo();
-				int length = 0;
-
-				StringBuilder name = new StringBuilder();
-
-				GL.GetActiveAttrib(ProgramID, i, 256, out length, out info.size, out info.type, name);
-
-				info.name = name.ToString();
-				info.address = GL.GetAttribLocation(ProgramID, info.name);
-				Attributes.Add(name.ToString(), info);
-				Console.WriteLine(name + " " + info.address);
-			}
-
-			for (int i = 0; i < UniformCount; i++) {
-				UniformInfo info = new UniformInfo();
-				int length = 0;
-
-				StringBuilder name = new StringBuilder();
-
-				GL.GetActiveUniform(ProgramID, i, 256, out length, out info.size, out info.type, name);
-
-				info.name = name.ToString();
-				Uniforms.Add(name.ToString(), info);
-				info.address = GL.GetUniformLocation(ProgramID, info.name);
-				Console.WriteLine(name + " " + info.address);
-			}
 		}
 
 		public void GenBuffers() {
@@ -151,21 +123,11 @@ namespace ChronosEngine.Shaders {
 		}
 
 		public int GetAttribute(string name) {
-			if (Attributes.ContainsKey(name)) {
-				return Attributes[name].address;
-			}
-			else {
-				return -1;
-			}
+			return GL.GetAttribLocation(this.ProgramID, name);
 		}
 
 		public int GetUniform(string name) {
-			if (Uniforms.ContainsKey(name)) {
-				return Uniforms[name].address;
-			}
-			else {
-				return -1;
-			}
+			return GL.GetUniformLocation(this.ProgramID, name);
 		}
 
 		public uint GetBuffer(string name) {
