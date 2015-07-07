@@ -32,8 +32,10 @@ using System;
 
 namespace ChronosEngine {
 	public abstract class AssetProvider {
-		public static string GetAssetRoot() { 
-			return ""; 
+		public static string AssetRoot {
+			get {
+				return "";
+			}
 		}
 		public static string GetAssetPath(string asset) {
 			return asset;

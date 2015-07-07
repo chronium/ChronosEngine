@@ -37,6 +37,7 @@ using ChronosEngine;
 using ChronosEngine.Camera;
 using ChronosEngine.Models3D;
 using ChronosEngine.Primitives3D;
+using ChronosEngine.Scene;
 using ChronosEngine.Shaders;
 using ChronosEngine.Structures;
 using ChronosEngine.Textures;
@@ -56,6 +57,8 @@ namespace Game {
 
 		DirectionalLight light;
 
+		public SceneGraph Scene { get; set; }
+
 		public GameTest() : base() {
 		}
 		public override void OnLoad(EventArgs e) {
@@ -71,11 +74,14 @@ namespace Game {
 			texture = Texture2D.LoadTexture("RoadTexture.png");
 			brick = Texture2D.LoadTexture("brick1.jpg");
 
-			var roadMesh = ModelLoader.LoadMesh("road.obj");
+			Scene = new SceneGraph();
+			Scene.CreateWorld(new Vector3(0, -9.81f, 0f));
+
+			var roadMesh = ColladaLoader.Load("road", Scene);
 			var ballMesh = ModelLoader.LoadMesh("ball.obj");
 			var roadMaterial = new Material() {
 				AmbientColor = new Vector4(0.125f, 0.125f, 0.125f, 1f),
-				SpecularIntensity = 2f,
+				SpecularIntensity = new Vector4(2f),
 				SpecularPower = 64f,
 			};
 
@@ -87,39 +93,13 @@ namespace Game {
 				direction = new Vector3(1, 1, 1),
 			};
 
-			BroadphaseInterface broadphase = new DbvtBroadphase();
-			DefaultCollisionConfiguration config = new DefaultCollisionConfiguration();
-			CollisionDispatcher dispatcher = new CollisionDispatcher(config);
-			SequentialImpulseConstraintSolver solver = new SequentialImpulseConstraintSolver();
-			world = new DiscreteDynamicsWorld(dispatcher, broadphase, solver, config);
-			world.Gravity = new Vector3(0, -9.81f, 0);
-			world.DispatchInfo.AllowedCcdPenetration = 0.0001f;
-
-			CollisionShape groundShape = new BoxShape(6, 0, 6);
-			DefaultMotionState groundMotionState = new DefaultMotionState(Matrix4.CreateTranslation(new Vector3(0, -1, 0)));
-			RigidBodyConstructionInfo groundRigidBodyCI = new RigidBodyConstructionInfo(0, groundMotionState, groundShape, new Vector3(0));
-			var groundRigidBody = new RigidBody(groundRigidBodyCI);
-			world.AddRigidBody(groundRigidBody);
-
-			road = new Model(roadMesh, texture, roadMaterial, groundRigidBody);
+			//var groundBody = Scene.BodyFromShape(new ConvexHullShape(roadMesh[0].Points), Matrix4.CreateTranslation(new Vector3(0, -1, 0)));
+			//road = new Model(roadMesh[0], texture, roadMaterial, groundBody);
+			Scene.AddModel(new Model(roadMesh[0].model.mesh, roadMesh[0].model.material, Scene.CreateBoxBody(new Vector3(6, 0, 6), Matrix4.CreateTranslation(new Vector3(0, 0, 0)))));
 
 			Matrix4 startMatrix = Matrix4.CreateTranslation(0, 4, 0);
-			ghostObject = new PairCachingGhostObject();
-			ghostObject.WorldTransform = startMatrix;
-			broadphase.OverlappingPairCache.SetInternalGhostPairCallback(new GhostPairCallback());
-
-			ConvexShape capsule = new CapsuleShape(0.75f, 1.75f);
-			ghostObject.CollisionShape = capsule;
-			ghostObject.CollisionFlags = CollisionFlags.CharacterObject;
-
-			character = new KinematicCharacterController(ghostObject, capsule, .35f);
-			world.AddCollisionObject(ghostObject, CollisionFilterGroups.CharacterFilter, CollisionFilterGroups.StaticFilter | CollisionFilterGroups.DefaultFilter);
-			world.AddAction(character);
+			Scene.AddCharacter(startMatrix, 0.5f, 1.75f);
 		}
-
-		PairCachingGhostObject ghostObject;
-		KinematicCharacterController character;
-        DiscreteDynamicsWorld world;
 
 		Vector3 Movement;
 		float Speed = 4f;
@@ -152,11 +132,11 @@ namespace Game {
 			UpdateMovement();
 
 			Vector3 mov = Vector3.Transform(Movement, ((QuaternionCamera)Camera).TargetOrientationY.Inverted());
-			character.SetWalkDirection(mov);
+			Scene.CharacterController.SetWalkDirection(mov);
 
-			if (character.OnGround)
+			if (Scene.CharacterController.OnGround)
 				if (Keyboard[Key.Space])
-					character.Jump();
+					Scene.CharacterController.Jump();
 
 			if (Keyboard[Key.ShiftLeft] || Keyboard[Key.ShiftRight])
 				Speed = 6f;
@@ -164,10 +144,10 @@ namespace Game {
 				Speed = 4f;
 
 			Matrix4 mat;
-			character.GhostObject.GetWorldTransform(out mat);
+			Scene.CharacterController.GhostObject.GetWorldTransform(out mat);
 			((QuaternionCamera)Camera).Position = mat.ExtractTranslation();
 
-			world.StepSimulation((float)e.Time, 60, 1 / 60.0f);
+			Scene.World.world.StepSimulation((float)e.Time, 60, 1 / 60.0f);
 		}
 		
 		public override void OnRenderFrame(FrameEventArgs e) {
@@ -175,13 +155,15 @@ namespace Game {
 			this.SetCameraProjectionMatrix();
 
 			ambientShader.Bind();
-			road.Bind(ambientShader);
+			foreach (var v in Scene.Models)
+				v.Bind(ambientShader);
 
 			this.Enable3DBlend();
 			
 			tempLightShader.Bind();
 			((DirectionalLightingShader)tempLightShader).BindDirectionalLight("directionalLight", light);
-			road.Bind(tempLightShader);
+			foreach (var v in Scene.Models)
+				v.Bind(tempLightShader);
 
 			this.Disable3DBlend();
 

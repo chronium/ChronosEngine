@@ -78,7 +78,7 @@ namespace ChronosEngine {
 		/// <param name="gameResolution">Game resolution.</param>
 		/// <param name="title">Title.</param>
 		public Window(Resolution screenResolution, Resolution gameResolution, string title)
-			: base(screenResolution.Width, screenResolution.Height, new GraphicsMode(new ColorFormat(8, 8, 8, 8), 8, 16, 4, new ColorFormat(8, 8, 8, 8), 2, false), title) {
+			: base(screenResolution.Width, screenResolution.Height, GraphicsMode.Default, title) {
 			this.ScreenResolution = screenResolution;
 			this.GameResolution = gameResolution;
 		}

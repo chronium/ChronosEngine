@@ -117,12 +117,14 @@ namespace ChronosEngine.Textures {
 			}
 		}
 
-		new public static string GetAssetRoot() {
-			return "Assets/Textures/";
+		new public static string AssetRoot {
+			get {
+				return "Assets/Textures/";
+			}
 		}
 
 		new public static string GetAssetPath(string asset) {
-			return GetAssetRoot() + asset;
+			return AssetRoot + asset;
 		}
 	}
 }

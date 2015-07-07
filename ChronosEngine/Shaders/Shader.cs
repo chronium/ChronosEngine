@@ -186,7 +186,7 @@ namespace ChronosEngine.Shaders {
 
 		public void BindMaterial(string field, Material material) {
 			GL.Uniform4(this.GetUniform(field + ".ambient"), material.AmbientColor);
-			GL.Uniform1(this.GetUniform(field + ".specularIntensity"), material.SpecularIntensity);
+			GL.Uniform4(this.GetUniform(field + ".specularIntensity"), material.SpecularIntensity);
 			GL.Uniform1(this.GetUniform(field + ".specularPower"), material.SpecularPower);
 		}
 	}

@@ -20,7 +20,7 @@ namespace ChronosEngine.Models3D {
 			List<Vector2> texCoords = new List<Vector2>();
 			List<Vertex3> vertices = new List<Vertex3>();
 
-			List<uint> indices = new List<uint>();
+			List<int> indices = new List<int>();
 
 			bool quads = false;
 
@@ -45,7 +45,7 @@ namespace ChronosEngine.Models3D {
 								Vertex3 temp = ParseVertex(split[i], positions, texCoords, normals);
 								if (!vertices.Contains(temp))
 									vertices.Add(temp);
-								indices.Add((uint)vertices.IndexOf(temp));
+								indices.Add(vertices.IndexOf(temp));
 							}
 							quads = split.Length > 4;
 							break;
@@ -69,12 +69,14 @@ namespace ChronosEngine.Models3D {
 			}
 		}
 
-		new public static string GetAssetRoot() {
-			return "Assets/Models/";
+		new public static string AssetRoot {
+			get {
+				return "Assets/Models/";
+			}
 		}
 
 		new public static string GetAssetPath(string asset) {
-			return GetAssetRoot() + asset;
+			return AssetRoot + asset;
 		}
 	}
 }

@@ -17,7 +17,9 @@ namespace ChronosEngine.Primitives3D {
 
 		public bool Quad { get; set; }
 
-		public Mesh(Vertex3[] vertices, int numVertices, uint[] inidices, int numIndices, bool quad) {
+		public List<Vector3> Points { get; set; }
+
+		public Mesh(Vertex3[] vertices, int numVertices, int[] inidices, int numIndices, bool quad) {
 			this.DrawCount = numIndices;
 			this.VertexArrayBuffers = new int[(int)Buffers.num_buffers];
 			this.Quad = quad;
@@ -32,6 +34,8 @@ namespace ChronosEngine.Primitives3D {
 				pos.Add(v.Pos);
 				texcoord.Add(v.TexCoord);
 			}
+
+			this.Points = pos;
 
 			GL.GenBuffers((int)Buffers.num_buffers, VertexArrayBuffers);
 
@@ -48,7 +52,7 @@ namespace ChronosEngine.Primitives3D {
 			GL.VertexAttribPointer(3, 3, VertexAttribPointerType.Float, false, Vertex3.Stride, Vector3.SizeInBytes + Vector2.SizeInBytes + Vector4.SizeInBytes);
 
 			GL.BindBuffer(BufferTarget.ElementArrayBuffer, VertexArrayBuffers[(int)Buffers.index_buffer]);
-			GL.BufferData(BufferTarget.ElementArrayBuffer, numIndices * sizeof(uint), inidices.ToArray(), BufferUsageHint.StaticDraw);
+			GL.BufferData(BufferTarget.ElementArrayBuffer, numIndices * sizeof(int), inidices.ToArray(), BufferUsageHint.StaticDraw);
 
 			GL.BindVertexArray(0);
 		}

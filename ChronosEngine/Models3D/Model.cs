@@ -15,7 +15,6 @@ using OpenTK.Graphics.OpenGL;
 namespace ChronosEngine.Models3D {
 	public class Model {
 		public Mesh Mesh { get; set; }
-		public Texture2D Texture { get; set; }
 		public Material Material { get; set; }
 		public RigidBody RigidBody { get; set; }
 		public Vector3 Scale { get; set; } = Vector3.One;
@@ -28,16 +27,15 @@ namespace ChronosEngine.Models3D {
 			}
 		}
 		
-		public Model(Mesh mesh, Texture2D texture, Material material, RigidBody rigidBody) {
+		public Model(Mesh mesh, Material material, RigidBody rigidBody) {
 			this.Mesh = mesh;
-			this.Texture = texture;
 			this.Material = material;
 			this.RigidBody = rigidBody;
 		}
 
 		public void Bind(Shader shader) {
 			shader.Update(ChronoGame.Instance, this);
-			Texture.Bind(TextureUnit.Texture0);
+			Material.TextureDiffuse.Bind(TextureUnit.Texture0);
 			Mesh.Bind();
 		}
 	}

@@ -1,19 +1,21 @@
-#version 120
-varying vec2 texCoord;
-varying vec4 vertColor;
+#version 330
+in vec2 texCoord;
+in vec4 vertColor;
 
 uniform sampler2D diffuse;
 uniform vec4 ambient;
 
 struct BaseMaterial {
 	vec4 ambient;
-	float specularIntensity;
+	vec4 specularIntensity;
 	float specularPower;
 };
 
 uniform BaseMaterial material;
 
+out vec4 fragColor;
+
 void main() {
-	gl_FragColor = texture2D(diffuse, texCoord) 
+	fragColor = texture2D(diffuse, texCoord) 
 	* vertColor * material.ambient;
 }

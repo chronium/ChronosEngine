@@ -1,16 +1,16 @@
-#version 120
+#version 330
 
-varying vec2 texCoord;
-varying vec4 vertColor;
-varying vec3 normal0;
-varying vec3 worldPos0;
+in vec2 texCoord;
+in vec4 vertColor;
+in vec3 normal0;
+in vec3 worldPos0;
 
 uniform sampler2D diffuse;
 uniform vec3 eyePos;
 
 struct BaseMaterial {
 	vec4 ambient;
-	float specularIntensity;
+	vec4 specularIntensity;
 	float specularPower;
 };
 
@@ -59,6 +59,8 @@ vec4 calcDirectionalLight(DirectionalLight directionalLight, vec3 normal)
     return calcLight(directionalLight.base, -directionalLight.direction, normal);
 }
 
+out vec4 fragColor;
+
 void main() {
-	gl_FragColor = texture2D(diffuse, texCoord) * calcDirectionalLight(directionalLight, normalize(normal0));
+	fragColor = texture2D(diffuse, texCoord) * calcDirectionalLight(directionalLight, normalize(normal0));
 }
