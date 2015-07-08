@@ -35,7 +35,7 @@ using System.Drawing;
 using OpenTK.Input;
 using OpenTK.Graphics;
 using ChronosEngine.Structures;
-using ChronosEngine.Render2D.DebugPrimitives;
+using ChronosEngine.Render2D.Primitives;
 using ChronosEngine.Shaders;
 using Microsoft.Scripting.Hosting;
 using System.Collections.Generic;

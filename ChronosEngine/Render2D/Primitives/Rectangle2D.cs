@@ -33,14 +33,14 @@ using ChronosEngine.Interfaces;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
-namespace ChronosEngine.Render2D.DebugPrimitives {
+namespace ChronosEngine.Render2D.Primitives {
 	public class Rectangle2D : IRenderable2D {
 		public Vector2 pos1, pos2;
 		public Vector4 color;
 
 		public Rectangle2D(Vector2 pos1, Vector2 pos2, Vector4 color) {
-			this.pos1 = pos1;
-			this.pos2 = pos2;
+			this.pos2 = pos1;
+			this.pos1 = pos2;
 			this.color = color;
 		}
 

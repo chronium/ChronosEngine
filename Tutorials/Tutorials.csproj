@@ -61,6 +61,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FirstTutorial\Tutorial1.cs" />
+    <Compile Include="SecondTutorial\Tutorial2.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

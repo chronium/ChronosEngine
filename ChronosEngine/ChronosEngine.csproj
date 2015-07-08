@@ -65,6 +65,7 @@
     <Compile Include="FileStructure\Node.cs" />
     <Compile Include="FileStructure\NodeType.cs" />
     <Compile Include="FpsCounter.cs" />
+    <Compile Include="Helpers\ColorHelper.cs" />
     <Compile Include="Helpers\HashHelper.cs" />
     <Compile Include="Interfaces\ICamera.cs" />
     <Compile Include="Models3D\ColladaLoader.cs" />
@@ -79,10 +80,10 @@
     <Compile Include="Textures\Vector2D.cs" />
     <Compile Include="Window.cs" />
     <Compile Include="Structures\Resolution.cs" />
-    <Compile Include="Render2D\DebugPrimitives\Line2D.cs" />
-    <Compile Include="Render2D\DebugPrimitives\Triangle2D.cs" />
-    <Compile Include="Render2D\DebugPrimitives\Rectangle2D.cs" />
-    <Compile Include="Render2D\DebugPrimitives\Circle2D.cs" />
+    <Compile Include="Render2D\Primitives\Line2D.cs" />
+    <Compile Include="Render2D\Primitives\Triangle2D.cs" />
+    <Compile Include="Render2D\Primitives\Rectangle2D.cs" />
+    <Compile Include="Render2D\Primitives\Circle2D.cs" />
     <Compile Include="Shaders\Shader.cs" />
     <Compile Include="Textures\Texture2D.cs" />
     <Compile Include="Render2D\ImmediateRenderer2D.cs" />

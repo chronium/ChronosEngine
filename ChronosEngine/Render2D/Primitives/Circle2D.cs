@@ -29,31 +29,36 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 using System;
-using ChronosEngine.Interfaces;
 using OpenTK;
+using ChronosEngine.Interfaces;
 using OpenTK.Graphics.OpenGL;
 
-namespace ChronosEngine.Render2D.DebugPrimitives {
-	public class Triangle2D : IRenderable2D {
-		public Vector2 v1, v2, v3;
+namespace ChronosEngine.Render2D.Primitives {
+	public class Circle2D : IRenderable2D {
+		public Vector2 center;
 		public Vector4 color;
+		public float radius;
 
-		public Triangle2D(Vector2 v1, Vector2 v2, Vector2 v3, Vector4 color) {
-			this.v1 = v1;
-			this.v2 = v2;
-			this.v3 = v3;
+		public Circle2D(Vector2 center, float radius, Vector4 color) {
+			this.center = center;
+			this.radius = radius;
 			this.color = color;
 		}
 
 		public void Render(IRenderer2D renderer) {
-			GL.Begin(PrimitiveType.Triangles);
+			GL.Begin(PrimitiveType.TriangleFan);
 
-			GL.Color4(color);
-			GL.Vertex2(v1);
-			GL.Vertex2(v2);
-			GL.Vertex2(v3);
+			GL.Vertex2(center);
+			for (float ii = 0; ii < 361; ii++) { 
+				float theta = 2.0f * 3.1415926f * ii / 360f;//get the current angle 
 
-			GL.End();
+				float x = radius * (float)Math.Cos(theta);//calculate the x component 
+				float y = radius * (float)Math.Sin(theta);//calculate the y component 
+
+				GL.Vertex2(x + center.X, y + center.Y);//output vertex 
+
+			} 
+			GL.End(); 
 		}
 	}
 }

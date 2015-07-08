@@ -33,7 +33,7 @@ using ChronosEngine.Interfaces;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
-namespace ChronosEngine.Render2D.DebugPrimitives {
+namespace ChronosEngine.Render2D.Primitives {
 	public class Line2D : IRenderable2D {
 		public Vector2 pos1, pos2;
 		public Vector4 color;
@@ -43,17 +43,24 @@ namespace ChronosEngine.Render2D.DebugPrimitives {
 			this.pos1 = pos1;
 			this.pos2 = pos2;
 			this.color = color;
-			this.width = width;
+			this.width = width * 2;
 		}
 
 		public void Render(IRenderer2D renderer) {
-			GL.LineWidth(width);
-			GL.Begin(PrimitiveType.Lines);
+			float angle = (float)Math.Atan2(pos2.Y - pos1.Y, pos2.X - pos1.X);
+			float t2sina1 = width / 2 * (float)Math.Sin(angle);
+			float t2cosa1 = width / 2 * (float)Math.Cos(angle);
+			float t2sina2 = width / 2 * (float)Math.Sin(angle);
+			float t2cosa2 = width / 2 * (float)Math.Cos(angle);
 
+			GL.Begin(PrimitiveType.Triangles);
 			GL.Color4(color);
-			GL.Vertex2(pos1);
-			GL.Vertex2(pos2);
-	
+			GL.Vertex2(pos1.X + t2sina1, pos1.Y - t2cosa1);
+			GL.Vertex2(pos2.X + t2sina2, pos2.Y - t2cosa2);
+			GL.Vertex2(pos2.X - t2sina2, pos2.Y + t2cosa2);
+			GL.Vertex2(pos2.X - t2sina2, pos2.Y + t2cosa2);
+			GL.Vertex2(pos1.X - t2sina1, pos1.Y + t2cosa1);
+			GL.Vertex2(pos1.X + t2sina1, pos1.Y - t2cosa1);
 			GL.End();
 		}
 	}
