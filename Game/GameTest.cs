@@ -72,13 +72,13 @@ namespace Game {
 			tempLightShader = new DirectionalLightingShader();
 
 			texture = Texture2D.LoadTexture("RoadTexture.png");
-			brick = Texture2D.LoadTexture("brick1.jpg");
+			brick = Content.Load<Texture2D>("brick1.jpg");
 
 			Scene = new SceneGraph();
 			Scene.CreateWorld(new Vector3(0, -9.81f, 0f));
 
-			var roadMesh = ColladaLoader.Load("road", Scene);
-			var ballMesh = ModelLoader.LoadMesh("ball.obj");
+			var roadMesh = ColladaLoader.Load("road", Scene, Content);
+			var ballMesh = Content.Load<Mesh>("ball.obj");
 			var roadMaterial = new Material() {
 				AmbientColor = new Vector4(0.125f, 0.125f, 0.125f, 1f),
 				SpecularIntensity = new Vector4(2f),

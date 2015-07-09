@@ -36,7 +36,7 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
 namespace ChronosEngine.Textures {
-	public class Texture2D : AssetProvider {
+	public class Texture2D : Asset {
 		/// <summary>
 		/// Gets the texture ID.
 		/// </summary>
@@ -59,8 +59,8 @@ namespace ChronosEngine.Textures {
 		/// <param name="path">The image path.</param>
 		/// <param name="nearest">If set to <c>true</c>, set filter to nearest.</param>
 		public static Texture2D LoadTexture(string path, bool nearest = false) {
-			var image = loadImage(GetAssetPath(path), nearest);
-            var tex = new Texture2D(image.Item2);
+			var image = loadImage(path, nearest);
+			var tex = new Texture2D(image.Item2);
 			tex.Size = image.Item1;
 			return tex;
 		}
@@ -76,7 +76,7 @@ namespace ChronosEngine.Textures {
 
 			GL.BindTexture(TextureTarget.Texture2D, texID);
 			BitmapData data = image.LockBits(new System.Drawing.Rectangle(0, 0, image.Width, image.Height),
-				                  ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+								  ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
 			GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba8, data.Width, data.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
 
@@ -86,13 +86,12 @@ namespace ChronosEngine.Textures {
 				GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.LinearMipmapLinear);
 				GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
 				GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
-			}
-			else {
+			} else {
 				GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.NearestMipmapNearest);
 				GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
 				GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
 			}
-			
+
 			return texID;
 		}
 
@@ -111,20 +110,21 @@ namespace ChronosEngine.Textures {
 			try {
 				Image file = Image.FromFile(filename);
 				return new Tuple<Vector2, int>(new Vector2(file.Width, file.Height), loadImage(new Bitmap(file), nearest));
-			}
-			catch (FileNotFoundException) {
+			} catch (FileNotFoundException) {
 				return new Tuple<Vector2, int>(Vector2.Zero, -1);
 			}
 		}
+	}
 
-		new public static string AssetRoot {
-			get {
-				return "Assets/Textures/";
-			}
+	public class Texture2DProvider : AssetProvider<Texture2D> {
+		public Texture2DProvider(string root) 
+			: base(root, "Textures/") {
 		}
 
-		new public static string GetAssetPath(string asset) {
-			return AssetRoot + asset;
+		public override Texture2D Load(string assetName, params object[] args) {
+			if (args.Length < 1)
+				return Texture2D.LoadTexture(assetName, false);
+			return Texture2D.LoadTexture(assetName, (bool)args[0]);
 		}
 	}
 }

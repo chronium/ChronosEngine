@@ -55,24 +55,27 @@ namespace ChronosEngine {
 		public KeyboardDevice Keyboard { get; set; }
 		public MouseDevice Mouse { get; set; }
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="ChronosEngine.ChronoGame"/> class.
-		/// </summary>
-		/// <param name="title">Window title.</param>
-		public ChronoGame(string title = "Untitled") {
-			this.GameEngine = new GameEngine(new Resolution(800, 600), new Resolution(800, 600), title, this);
+		public ContentManager Content { get; set; }
+
+		public ChronoGame(Resolution res1, Resolution res2, string title) {
+			this.GameEngine = new GameEngine(res1, res2, title, this);
 			DefaultGlobals.OrthographicProjection = Matrix4.CreateOrthographic(800, 600, 256f, -256f);
 
 			ChronoGame.Instance = this;
 			this.Keyboard = this.GameEngine.Window.Keyboard;
 			this.Mouse = this.GameEngine.Window.Mouse;
 		}
-		
-		public ChronoGame(Resolution resolution, string title = "Untitled") {
-			this.GameEngine = new GameEngine(resolution, resolution, title, this);
-			DefaultGlobals.OrthographicProjection = Matrix4.CreateOrthographic(GameEngine.GameResolution.Width, GameEngine.GameResolution.Height, 256f, -256f);
 
-			ChronoGame.Instance = this;
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ChronosEngine.ChronoGame"/> class.
+		/// </summary>
+		/// <param name="title">Window title.</param>
+		public ChronoGame(string title = "Untitled")
+			: this(new Resolution(800, 600), new Resolution(800, 600), title) {
+		}
+		
+		public ChronoGame(Resolution resolution, string title = "Untitled")
+			: this(resolution, resolution, title) {
 		}
 
 		public void Run() {
@@ -86,6 +89,8 @@ namespace ChronosEngine {
 		public virtual void OnLoad(EventArgs e) {
 			this.SetClearColor(Color.Black);
 			this.SetViewport(0, 0, GameEngine.GameResolution.Width, GameEngine.GameResolution.Height);
+			this.Content = new ContentManager();
+			this.Content.LoadPredefinedProviders();
 		}
 		/// <summary>
 		/// Respond to resize events here.

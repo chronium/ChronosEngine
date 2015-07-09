@@ -10,9 +10,9 @@ using ChronosEngine.Textures;
 using OpenTK;
 
 namespace ChronosEngine.Models3D {
-	public class ModelLoader : AssetProvider {
+	public class MeshLoader : AssetProvider<Mesh> {
 		public static Mesh LoadMesh(string modelName) {
-			string path = GetAssetPath(modelName);
+			string path = modelName;
 			string[] lines = File.ReadAllLines(path);
 
 			List<Vector3> positions = new List<Vector3>();
@@ -69,14 +69,13 @@ namespace ChronosEngine.Models3D {
 			}
 		}
 
-		new public static string AssetRoot {
-			get {
-				return "Assets/Models/";
-			}
+		public MeshLoader(string root) 
+			: base(root, "Models/") {
+
 		}
 
-		new public static string GetAssetPath(string asset) {
-			return AssetRoot + asset;
+		public override Mesh Load(string assetName, params object[] args) {
+			return LoadMesh(assetName);
 		}
 	}
 }

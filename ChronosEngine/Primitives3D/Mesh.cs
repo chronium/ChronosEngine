@@ -10,7 +10,7 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
 namespace ChronosEngine.Primitives3D {
-	public class Mesh {
+	public class Mesh : Asset {
 		public int VertexBufferObject { get; set; }
 		public int[] VertexArrayBuffers { get; set; }
 		public int DrawCount { get; set; }

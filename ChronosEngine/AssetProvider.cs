@@ -29,16 +29,64 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 using System;
+using System.Collections.Generic;
+using ChronosEngine.Models3D;
+using ChronosEngine.Primitives3D;
+using ChronosEngine.Textures;
 
 namespace ChronosEngine {
-	public abstract class AssetProvider {
-		public static string AssetRoot {
-			get {
-				return "";
-			}
+	public abstract class Asset {
+
+	}
+
+	public abstract class AssetProvider<T> where T: Asset {
+		public AssetProvider(string root, string assetRoot) {
+			this.Root = root;
+			this.AssetRoot = assetRoot;
 		}
-		public static string GetAssetPath(string asset) {
-			return asset;
+
+		public string Root { get; }
+		public string AssetRoot { get; }
+
+		public string GetAssetPath(string asset) {
+			return Root + AssetRoot + asset;
+		}
+
+		public abstract T Load(string assetName, params object[] args);
+	}
+
+	public class ContentManager {
+		public string ContentRoot { get; set; }
+
+		public Dictionary<Type, object> AssetProviders = new Dictionary<Type, object>();
+
+		public ContentManager(string root = "Assets/") {
+			this.ContentRoot = root;
+		}
+
+		public void LoadPredefinedProviders() {
+			this.RegisterAssetProvider<Texture2D>(typeof(Texture2DProvider));
+			this.RegisterAssetProvider<Mesh>(typeof(MeshLoader));
+		}
+
+		public void RegisterAssetProvider<T>(Type type) {
+			this.AssetProviders[typeof(T)] = Activator.CreateInstance(type, new[] { ContentRoot });
+		}
+
+		public T Load<T>(string asset, params object[] args) where T: Asset {
+			if (AssetProviders.ContainsKey(typeof(T))) {
+				AssetProvider<T> provider = (AssetProvider<T>)AssetProviders[typeof(T)];
+                return provider.Load(provider.GetAssetPath(asset), args);
+			}
+			return null;
+		}
+
+		public T LoadAbsolute<T>(string asset, params object[] args) where T : Asset {
+			if (AssetProviders.ContainsKey(typeof(T))) {
+				AssetProvider<T> provider = (AssetProvider<T>)AssetProviders[typeof(T)];
+				return provider.Load(asset, args);
+			}
+			return null;
 		}
 	}
 }

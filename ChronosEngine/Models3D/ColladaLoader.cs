@@ -14,14 +14,14 @@ using ChronosEngine.Textures;
 using OpenTK;
 
 namespace ChronosEngine.Models3D {
-	public class ColladaLoader : AssetProvider {
-		public static List<ModelStr> Load(string name, SceneGraph graph) {
+	public class ColladaLoader {
+		public static List<ModelStr> Load(string name, SceneGraph graph, ContentManager manager) {
 			var materialList = new List<Structures.Material>();
 
 			var modelList = new List<ModelStr>();
 			var modelDict = new Dictionary<string, ColladaModel>();
 
-			if (File.Exists(GetAssetPath(name))) {
+			if (File.Exists(GetModelPath(name))) {
 				Console.WriteLine("---Loading asset---");
 				Console.WriteLine("Asset type:   Collada model (dae)");
 				Console.WriteLine("Asset name:   " + name);
@@ -35,7 +35,7 @@ namespace ChronosEngine.Models3D {
 				});
 				logstream.Attach();
 
-				Assimp.Scene scene = importer.ImportFile(GetAssetPath(name), PostProcessPreset.TargetRealTimeMaximumQuality);
+				Assimp.Scene scene = importer.ImportFile(GetModelPath(name), PostProcessPreset.TargetRealTimeMaximumQuality);
 
 				if (scene.HasMaterials)
 					foreach (Assimp.Material mat in scene.Materials) {
@@ -43,7 +43,7 @@ namespace ChronosEngine.Models3D {
 							AmbientColor = new Vector4(0.125f, 0.125f, 0.125f, 1f),
 							SpecularIntensity = new Vector4(mat.ColorSpecular.R, mat.ColorSpecular.G, mat.ColorSpecular.B, mat.ColorSpecular.A),
 							SpecularPower = 64f,
-							TextureDiffuse = Texture2D.LoadTexture(mat.TextureDiffuse.FilePath)
+							TextureDiffuse = manager.LoadAbsolute<Texture2D>(GetTexturePath(name, mat.TextureDiffuse.FilePath))
 						});
 					}
 
@@ -95,14 +95,17 @@ namespace ChronosEngine.Models3D {
 			return new Primitives3D.Mesh(vertices.ToArray(), vertices.Count, mesh.GetIndices(), mesh.GetIndices().Length, false);
 		}
 
-		new public static string AssetRoot {
+		public static string AssetRoot {
 			get {
 				return "Assets/Models/";
 			}
 		}
 
-		new public static string GetAssetPath(string asset) {
+		public static string GetModelPath(string asset) {
 			return string.Format("{0}{1}/{1}.dae", AssetRoot, asset);
+		}
+		public static string GetTexturePath(string asset, string texture) {
+			return string.Format("{0}{1}/{2}", AssetRoot, asset, texture);
 		}
 	}
 
