@@ -18,11 +18,14 @@ namespace CHIP8Emu {
 			this.ScreenSize = new Resolution(width, height);
 		}
 
-		public override void OnUpdateFrame(FrameEventArgs e) {
-			base.OnUpdateFrame(e);
+		public override void OnLoad(EventArgs e) {
+			base.OnLoad(e);
 		}
 
-		public override void OnLoad(EventArgs e) {
+		public override void OnUpdateFrame(FrameEventArgs e) {
+		}
+
+		public override void OnRenderFrame(FrameEventArgs e) {
 			this.Clear();
 			this.SwapBuffers();
 		}

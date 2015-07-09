@@ -12,5 +12,9 @@ namespace CHIP8Emu {
 			RAM = new byte[ramSize];
 			Array.Clear(RAM, 0, RAM.Length);
 		}
+
+		public void WriteBytes(byte[] from, int start, int to, int length) {
+			Array.Copy(from, start, RAM, to, length);
+		}
 	}
 }
