@@ -86,7 +86,7 @@ namespace ChronosEngine {
 				AssetProvider<T> provider = (AssetProvider<T>)AssetProviders[typeof(T)];
 				return provider.Load(asset, args);
 			}
-			return null;
+			throw new Exception("Unsupported " + typeof(T).Name +" asset type!");
 		}
 	}
 }
