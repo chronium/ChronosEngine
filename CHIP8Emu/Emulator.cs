@@ -43,12 +43,10 @@ namespace CHIP8Emu {
 					break;
 				case 0x1:
 					short jmpAddr = (short)(instr & 0x0FFF);
-					Console.WriteLine("Jump: " + jmpAddr.ToString("x"));
 					PC = jmpAddr;
 					break;
 				case 0x2:
 					jmpAddr = (short)(instr & 0x0FFF);
-                    Console.WriteLine("Call: " + jmpAddr.ToString("x"));
 					RAM.writeShort(SB + (SP * 2), PC);
 					SP += 2;
 					PC = jmpAddr;
@@ -56,49 +54,47 @@ namespace CHIP8Emu {
 				case 0x3:
 					byte reg = (byte)((instr & 0x0F00) >> 8);
 					byte val = (byte)(instr & 0x00FF);
-					Console.WriteLine("Skip if V[{0}]({1}) == {2}", reg.ToString("x"), V[reg], val.ToString("x"));
 					if (V[reg] == val)
 						PC += 2;
 					break;
 				case 0x4:
 					reg = (byte)((instr & 0x0F00) >> 8);
 					val = (byte)(instr & 0x00FF);
-					Console.WriteLine("Skip if V[{0}]({1}) != {2}", reg.ToString("x"), V[reg], val.ToString("x"));
 					if (V[reg] != val)
 						PC += 2;
 					break;
 				case 0x6:
 					reg = (byte)((instr & 0x0F00) >> 8);
 					val = (byte)(instr & 0x00FF);
-					Console.WriteLine("V[{0}] = {1}", reg.ToString("x"), val.ToString("x"));
 					V[reg] = val;
 					break;
 				case 0x7:
 					reg = (byte)((instr & 0x0F00) >> 8);
 					val = (byte)(instr & 0x00FF);
-					Console.WriteLine("V[{0}] += {1}", reg.ToString("x"), val.ToString("x"));
 					V[reg] += val;
 					break;
 				case 0xA:
 					short setVal = (short)(instr & 0x0FFF);
-					Console.WriteLine("I = " + setVal.ToString("x"));
 					I = setVal;
 					break;
 				case 0xC:
 					reg = (byte)((instr & 0x0F00) >> 8);
 					val = (byte)(instr & 0x00FF);
-					Console.WriteLine("V[{0}] = rnd & {1}", reg.ToString("x"), val.ToString("x"));
-					V[reg] = (byte)random.Next(0, 0xFF);
+					V[reg] = (byte)(random.Next(0, 0xFF) & val);
 					break;
 				case 0xD:
 					byte xr = (byte)((instr & 0x0F00) >> 8);
 					byte yr = (byte)((instr & 0x00F0) >> 4);
 					byte s = (byte)(instr & 0x000F);
-					Console.WriteLine("Draw {0} bytes from {1} at ({2},{3})", s, I.ToString("x"), V[xr], V[yr]);
 					for (int y = V[yr]; y < V[yr] + s; y++)
 						for (int x = V[xr]; x < V[xr] + 8; x++) {
-							bool set = (RAM[I + (y - V[yr])] & (1 << (x - V[xr]))) != 0;
-                            if ((chip.Screen[x + y * chip.ScreenSize.Width] > 1) == set) {
+							int n = 8 - (x - V[xr]);
+							byte set = (byte)(RAM[I + (y - V[yr])] & (1 << n - 1));
+							if (x < 0 || x >= chip.ScreenSize.Width)
+								continue;
+							if (y < 0 || y >= chip.ScreenSize.Height)
+								continue;
+							if (chip.Screen[x + y * chip.ScreenSize.Width] == set) {
 								V[0xF] = 1;
 								chip.Screen[x + y * chip.ScreenSize.Width] = 0;
 							} else {
@@ -106,6 +102,32 @@ namespace CHIP8Emu {
 								chip.Screen[x + y * chip.ScreenSize.Width] = 1;
 							}
 						}
+					break;
+				case 0xE:
+					reg = (byte)((instr & 0x0F00) >> 8);
+					val = (byte)(instr & 0x00FF);
+					switch (val) {
+						case 0xE9:
+							if (chip.Keys[V[reg]])
+								PC += 2;
+							break;
+						case 0xA9:
+							if (!chip.Keys[V[reg]])
+								PC += 2;
+							break;
+					}
+					break;
+				case 0xF:
+					reg = (byte)((instr & 0x0F00) >> 8);
+					val = (byte)(instr & 0x00FF);
+					switch (val) {
+						case 0x1E:
+							I += V[reg];
+							break;
+						default:
+							Console.WriteLine("Unknown: {0} at cycle {1}", instr.ToString("x").PadLeft(4, '0'), chip.count);
+							while (true) ;
+					}
 					break;
 				default:
 					Console.WriteLine("Unknown: {0} at cycle {1}", instr.ToString("x").PadLeft(4, '0'), chip.count);

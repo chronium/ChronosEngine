@@ -59,7 +59,7 @@ namespace ChronosEngine {
 
 		public ChronoGame(Resolution res1, Resolution res2, string title) {
 			this.GameEngine = new GameEngine(res1, res2, title, this);
-			DefaultGlobals.OrthographicProjection = Matrix4.CreateOrthographic(800, 600, 256f, -256f);
+			DefaultGlobals.OrthographicProjection = Matrix4.CreateOrthographic(res2.Width, res2.Height, 256f, -256f);
 
 			ChronoGame.Instance = this;
 			this.Keyboard = this.GameEngine.Window.Keyboard;

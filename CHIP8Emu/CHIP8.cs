@@ -23,7 +23,7 @@ namespace CHIP8Emu {
 
 		public byte[] Screen { get; set; }
 
-		public CHIP8(string rom, int scale = 16, int width = 64, int height = 32) 
+		public CHIP8(string rom, int scale = 8, int width = 64, int height = 32) 
 			: base(new Resolution(width * scale, height * scale), "CHIP8 Emulator") {
 			this.Scale = scale;
 			this.ScreenSize = new Resolution(width, height);
@@ -46,10 +46,18 @@ namespace CHIP8Emu {
 		}
 
 		public int count = 0;
+		public bool[] Keys { get; set; } = new bool[16];
+		private char[] keyCodes = new char[] { '1', '2', '3', 'C',
+											   '4', '5', '6', 'D',
+											   '7', '8', '9', 'E',
+                                               'A', '0', 'B', 'F' };
 
 		public override void OnKeyPress(KeyPressEventArgs e) {
-			if (e.KeyChar == ' ') {
-				}
+			for (int i = 0; i < keyCodes.Length; i++)
+				if (e.KeyChar == keyCodes[i])
+					Keys[i] = true;
+				else
+					Keys[i] = false;
 		}
 
 		public override void OnUpdateFrame(FrameEventArgs e) {
@@ -73,8 +81,8 @@ namespace CHIP8Emu {
 		}
 
 		public void DrawPixel(int x, int y) {
-			x -= (ScreenSize.Width / 2) - 7;
-			y -= (ScreenSize.Height / 2) - 2;
+			x -= (ScreenSize.Width / 2);
+			y -= (ScreenSize.Height / 2) + 1;
 			Rectangle2D.Render(new Vector2(x++ * Scale, y++ * Scale), new Vector2(x * Scale, y * Scale), new Vector4(1));
 		}
 	}
