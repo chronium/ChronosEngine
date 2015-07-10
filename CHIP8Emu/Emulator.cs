@@ -33,13 +33,13 @@ namespace CHIP8Emu {
 			short instr = RAM.readShort(PC);
 			PC += 2;
 			switch ((instr & 0xF000) >> 12) {
-				case 2:
+				case 0x2:
 					short jmpAddr = (short)(instr & 0x0FFF);
                     Console.WriteLine("Jump to: " + jmpAddr.ToString("x"));
 					RAM.writeShort(SB + (SP * 2), PC);
 					PC = jmpAddr;
 					break;
-				case 6:
+				case 0x6:
 					byte reg = (byte)((instr & 0x0F00) >> 8);
 					byte val = (byte)(instr & 0x00FF);
 					Console.WriteLine("Setting register {0} to {1}", reg.ToString("x"), val.ToString("x"));
