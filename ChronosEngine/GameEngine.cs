@@ -79,6 +79,7 @@ namespace ChronosEngine {
 			Window.RenderFrame += OnRenderFrame;
 			Window.UpdateFrame += OnUpdateFrame;
 			Window.MouseMove += OnMouseMove;
+			Window.KeyPress += OnKeyPress;
 			Game = game;
 		}
 
@@ -159,6 +160,9 @@ namespace ChronosEngine {
 		protected void OnMouseMove(object sender, MouseMoveEventArgs e) {
 			Game.OnMouseMove(e);
 		}
-    }
+		protected void OnKeyPress(object sender, KeyPressEventArgs e) {
+			Game.OnKeyPress(e);
+		}
+	}
 }
 

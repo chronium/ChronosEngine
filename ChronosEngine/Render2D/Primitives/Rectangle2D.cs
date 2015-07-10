@@ -55,6 +55,18 @@ namespace ChronosEngine.Render2D.Primitives {
 
 			GL.End();
 		}
+
+		public static void Render(Vector2 pos1, Vector2 pos2, Vector4 color) {
+			GL.Begin(PrimitiveType.Quads);
+
+			GL.Color4(color);
+			GL.Vertex2(pos1);
+			GL.Vertex2(pos2.X, pos1.Y);
+			GL.Vertex2(pos2);
+			GL.Vertex2(pos1.X, pos2.Y);
+
+			GL.End();
+		}
 	}
 }
 
