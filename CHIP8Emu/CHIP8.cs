@@ -45,12 +45,17 @@ namespace CHIP8Emu {
 			this.Emulator.WriteBytes(ROM.bytes, 0, 0x200, ROM.bytes.Length);
 		}
 
+		public int count = 0;
+
 		public override void OnKeyPress(KeyPressEventArgs e) {
-			if (e.KeyChar == ' ')
-				Emulator.Run(this);
+			if (e.KeyChar == ' ') {
+				}
 		}
 
 		public override void OnUpdateFrame(FrameEventArgs e) {
+			Emulator.Run(this);
+			count++;
+			GameEngine.Window.Title = "CHIP8 Emulator - Cycles: " + count;
 		}
 
 		public override void OnRenderFrame(FrameEventArgs e) {
