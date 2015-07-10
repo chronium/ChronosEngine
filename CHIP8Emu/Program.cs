@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace CHIP8Emu {
 	class Program {
 		static void Main(string[] args) {
-			new CHIP8(args[0]).GameEngine.Window.Run(200, 60);
+			new CHIP8(args[0]).Run();
         }
 	}
 }

@@ -42,22 +42,25 @@ namespace CHIP8Emu {
 			this.renderer = new ImmediateRenderer2D();
 
 			Chip8ROM ROM = Content.Load<Chip8ROM>(rom);
+			this.Emulator.WriteBytes(RAM.font, 0, 0, RAM.font.Length);
 			this.Emulator.WriteBytes(ROM.bytes, 0, 0x200, ROM.bytes.Length);
 		}
 
 		public int count = 0;
 		public bool[] Keys { get; set; } = new bool[16];
-		private char[] keyCodes = new char[] { '1', '2', '3', 'C',
-											   '4', '5', '6', 'D',
-											   '7', '8', '9', 'E',
-                                               'A', '0', 'B', 'F' };
+		private char[] keyCodes = new char[] { '1', '2', '3', '4',
+											   'q', 'w', 'e', 'r',
+											   'a', 's', 'd', 'f',
+                                               'z', 'x', 'c', 'v' };
 
 		public override void OnKeyPress(KeyPressEventArgs e) {
-			for (int i = 0; i < keyCodes.Length; i++)
-				if (e.KeyChar == keyCodes[i])
+			for (int i = 0; i < keyCodes.Length; i++) {
+				if (e.KeyChar == keyCodes[i]) {
 					Keys[i] = true;
-				else
+					Emulator.keyPress((byte)i);
+				} else
 					Keys[i] = false;
+			}
 		}
 
 		public override void OnUpdateFrame(FrameEventArgs e) {
