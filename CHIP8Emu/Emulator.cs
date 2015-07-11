@@ -42,211 +42,183 @@ namespace CHIP8Emu {
 		}
 
 		public void Run(CHIP8 chip) {
-			if (!halted) {
-				short instr = RAM.readShort(PC);
+			if (!halted && DT <= 0) {
+				ushort instr = (ushort)RAM.readShort(PC);
 				PC += 2;
+				byte op = (byte)((instr & 0xF000) >> 12);
+				byte x = (byte)((instr & 0x0F00) >> 8);
+				byte y = (byte)((instr & 0x00F0) >> 4);
+				byte n = (byte)((instr & 0x000F));
+				byte kk = (byte)((instr & 0x00FF));
+				short nnn = (short)((instr & 0x0FFF));
+
+				short temp = 0;
+
 				switch ((instr & 0xF000) >> 12) {
 					case 0x0:
-						if (instr == 0x00EE) {
-							SP -= 2;
-							PC = RAM.readShort(SB + (SP * 2));
-						} else if (instr == 0x00E0) {
-							Array.Clear(chip.Screen, 0, chip.Screen.Length);
-						} else {
-							Console.WriteLine("Unknown: {0} at cycle {1}", instr.ToString("x").PadLeft(4, '0'), chip.count);
-							while (true) ;
+						switch (kk) {
+							case 0xEE:
+								PC = RAM[SB + SP];
+								SP -= 2;
+								break;
+							case 0xE0:
+								Array.Clear(chip.Screen, 0, chip.Screen.Length);
+								break;
+							default:
+								Console.WriteLine("Unknown opcode: {0}", instr.ToString("x").PadLeft(4, '0'));
+								while (true) ;
 						}
 						break;
 					case 0x1:
-						short jmpAddr = (short)(instr & 0x0FFF);
-						PC = jmpAddr;
+						PC = nnn;
 						break;
 					case 0x2:
-						jmpAddr = (short)(instr & 0x0FFF);
-						RAM.writeShort(SB + (SP * 2), PC);
 						SP += 2;
-						PC = jmpAddr;
+						RAM.writeShort(SB + SP, PC);
+						PC = nnn;
 						break;
 					case 0x3:
-						byte reg = (byte)((instr & 0x0F00) >> 8);
-						byte val = (byte)(instr & 0x00FF);
-						if (V[reg] == val)
+						if (V[x] == kk)
 							PC += 2;
 						break;
 					case 0x4:
-						reg = (byte)((instr & 0x0F00) >> 8);
-						val = (byte)(instr & 0x00FF);
-						if (V[reg] != val)
+						if (V[x] != kk)
 							PC += 2;
 						break;
 					case 0x5:
-						reg = (byte)((instr & 0x0F00) >> 8);
-						byte yr = (byte)((instr & 0x00F0) >> 4);
-						if (V[reg] == V[yr])
+						if (V[x] == V[y])
 							PC += 2;
 						break;
 					case 0x6:
-						reg = (byte)((instr & 0x0F00) >> 8);
-						val = (byte)(instr & 0x00FF);
-						V[reg] = val;
+						V[x] = kk;
 						break;
 					case 0x7:
-						reg = (byte)((instr & 0x0F00) >> 8);
-						val = (byte)(instr & 0x00FF);
-						V[reg] += val;
+						V[x] += kk;
 						break;
 					case 0x8:
-						byte xr = (byte)((instr & 0x0F00) >> 8);
-						yr = (byte)((instr & 0x00F0) >> 4);
-						val = (byte)(instr & 0x000F);
-						switch (val) {
+						switch(n) {
 							case 0x0:
-								V[xr] = V[yr];
+								V[x] = V[y];
 								break;
 							case 0x1:
-								V[xr] = (byte)(V[xr] | V[yr]);
+								V[x] |= V[y];
 								break;
 							case 0x2:
-								V[xr] = (byte)(V[xr] & V[yr]);
+								V[x] &= V[y];
 								break;
 							case 0x3:
-								V[xr] = (byte)(V[xr] ^ V[yr]);
+								V[x] ^= V[y];
 								break;
 							case 0x4:
-								short res = (short)(V[xr] + V[yr]);
-								if (res > 255)
-									V[0xF] = 1;
-								else
-									V[0xF] = 0;
-								V[xr] = (byte)(res & 0xFF);
+								temp = (short)(V[x] + V[y]);
+								V[0xF] = (byte)(temp > 0xFF ? 1 : 0);
+								V[x] = (byte)(temp & 0xFF);
 								break;
 							case 0x5:
-								res = (short)(V[xr] - V[yr]);
-								if (res > 255)
-									V[0xF] = 1;
-								else
-									V[0xF] = 0;
-								V[xr] = (byte)(res & 0xFF);
+								temp = (short)(V[x] - V[y]);
+								V[0xF] = (byte)(V[x] > V[y] ? 1 : 0);
+								V[x] = (byte)(temp & 0xFF);
 								break;
 							case 0x6:
-								V[0xF] = (byte)(V[yr] & (1 << 7));
-								V[xr] = (byte)(V[yr] >> 1);
+								V[0xF] = (byte)(V[x] & 1);
+								V[x] >>= 1;
 								break;
-							case 0xE:
-								V[0xF] = (byte)(V[yr] & (1 << 7));
-								V[xr] = (byte)(V[yr] << 1);
+							case 0x7:
+								V[0xF] = (byte)((V[x] & 128) >> 7);
+								V[x] <<= 1;
 								break;
 							default:
-								Console.WriteLine("Unknown: {0} at cycle {1}", instr.ToString("x").PadLeft(4, '0'), chip.count);
+								Console.WriteLine("Unknown opcode: {0}", instr.ToString("x").PadLeft(4, '0'));
 								while (true) ;
 						}
 						break;
 					case 0x9:
-						xr = (byte)((instr & 0x0F00) >> 8);
-						yr = (byte)((instr & 0x00F0) >> 4);
-						val = (byte)(instr & 0x000F);
-						switch (val) {
-							case 0x0:
-								if (V[xr] != V[yr])
-									PC += 2;
-								break;
-							default:
-								Console.WriteLine("Unknown: {0} at cycle {1}", instr.ToString("x").PadLeft(4, '0'), chip.count);
-								while (true) ;
-						}
+						if (V[x] != V[y])
+							PC += 2;
 						break;
 					case 0xA:
-						short setVal = (short)(instr & 0x0FFF);
-						I = setVal;
+						I = nnn;
 						break;
 					case 0xB:
-						setVal = (short)(instr & 0x0FFF);
-						PC = (short)(setVal + V[0]);
+						PC = (short)(nnn + V[0x0]);
 						break;
 					case 0xC:
-						reg = (byte)((instr & 0x0F00) >> 8);
-						val = (byte)(instr & 0x00FF);
-						V[reg] = (byte)(random.Next(0, 0xFF) & val);
+						byte r = (byte)random.Next(0, 0xFF);
+						V[x] = (byte)(r & kk);
 						break;
 					case 0xD:
-						xr = (byte)((instr & 0x0F00) >> 8);
-						yr = (byte)((instr & 0x00F0) >> 4);
-						byte s = (byte)(instr & 0x000F);
-						for (int y = V[yr]; y < V[yr] + s; y++)
-							for (int x = V[xr]; x < V[xr] + 8; x++) {
-								int n = 8 - (x - V[xr]);
-								byte set = (byte)(RAM[I + (y - V[yr])] & (1 << n - 1));
-								if (x < 0 || x >= chip.ScreenSize.Width)
+						for (int yl = V[y]; yl < V[y] + n; yl++)
+							for (int xl = V[x]; xl < V[x] + 8; xl++) {
+								int b = 8 - (xl - V[x]);
+								byte set = (byte)(RAM[I + (yl - V[y])] & (1 << b - 1));
+								if (xl < 0 || xl >= chip.ScreenSize.Width)
 									continue;
-								if (y < 0 || y >= chip.ScreenSize.Height)
+								if (yl < 0 || yl >= chip.ScreenSize.Height)
 									continue;
-								if (chip.Screen[x + y * chip.ScreenSize.Width] == set) {
+								if (chip.Screen[xl + yl * chip.ScreenSize.Width] == 1 && set == 1)
 									V[0xF] = 1;
-									chip.Screen[x + y * chip.ScreenSize.Width] = 0;
-								} else {
+								else 
 									V[0xF] = 0;
-									chip.Screen[x + y * chip.ScreenSize.Width] = 1;
-								}
-							}
+
+								chip.Screen[xl + yl * chip.ScreenSize.Width] = set;
+                            }
 						break;
 					case 0xE:
-						reg = (byte)((instr & 0x0F00) >> 8);
-						val = (byte)(instr & 0x00FF);
-						switch (val) {
+						switch(kk) {
 							case 0x9E:
-								if (chip.Keys[V[reg]])
+								if (chip.Keys[V[x]])
 									PC += 2;
 								break;
 							case 0xA1:
-								if (!chip.Keys[V[reg]])
+								if (!chip.Keys[V[x]])
 									PC += 2;
 								break;
 							default:
-								Console.WriteLine("Unknown: {0} at cycle {1}", instr.ToString("x").PadLeft(4, '0'), chip.count);
+								Console.WriteLine("Unknown opcode: {0}", instr.ToString("x").PadLeft(4, '0'));
 								while (true) ;
 						}
 						break;
 					case 0xF:
-						reg = (byte)((instr & 0x0F00) >> 8);
-						val = (byte)(instr & 0x00FF);
-						switch (val) {
-							case 0xA:
+						switch(kk) {
+							case 0x07:
+								V[x] = DT;
+								break;
+							case 0x0A:
 								halted = true;
-								keyReg = reg;
+								keyReg = x;
+								break;
+							case 0x15:
+								DT = V[x];
 								break;
 							case 0x18:
-								Console.WriteLine("Sound: " + V[reg]);
+								ST = V[x];
 								break;
 							case 0x1E:
-								I += V[reg];
+								I += V[x];
 								break;
 							case 0x29:
-								I = (short)(V[reg] * 5);
+								I = (short)(V[x] * 5);
 								break;
 							case 0x33:
-								var num = val.ToString().PadLeft(3, '0');
-								var chars = num.ToArray();
-								RAM[I] = (byte)chars[0];
-								RAM[I + 1] = (byte)chars[1];
-								RAM[I + 2] = (byte)chars[2];
+								RAM[I] = (byte)(V[x] / 100);
+								RAM[I + 1] = (byte)((V[x] / 10) % 10);
+								RAM[I + 2] = (byte)(V[x] % 10);
 								break;
 							case 0x55:
-								for (int i = I; i < I + reg; i++)
-									RAM[i] = V[i - I];
-								I += (short)(reg + 1);
+								for (int i = 0; i <= x; i++)
+									RAM[I + i] = V[i];
 								break;
 							case 0x65:
-								for (int i = I; i < I + reg; i++)
-									V[i - I] = RAM[i];
-								I += (short)(reg + 1);
+								for (int i = 0; i <= x; i++)
+									V[i] = RAM[I + i];
 								break;
 							default:
-								Console.WriteLine("Unknown: {0} at cycle {1}", instr.ToString("x").PadLeft(4, '0'), chip.count);
+								Console.WriteLine("Unknown opcode: {0}", instr.ToString("x").PadLeft(4, '0'));
 								while (true) ;
 						}
 						break;
 					default:
-						Console.WriteLine("Unknown: {0} at cycle {1}", instr.ToString("x").PadLeft(4, '0'), chip.count);
+						Console.WriteLine("Unknown opcode: {0}", instr.ToString("x").PadLeft(4, '0'));
 						while (true) ;
 				}
 			}

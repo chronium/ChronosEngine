@@ -74,6 +74,7 @@ namespace ChronosEngine {
 
 			Window = new Window(screenResolution, gameResolution, windowTitle);
 			Window.KeyDown += Keyboard_KeyDown;
+            Window.KeyUp += Keyboard_KeyUp;
 			Window.Load += OnLoad;
 			Window.Resize += OnResize;
 			Window.RenderFrame += OnRenderFrame;
@@ -94,11 +95,11 @@ namespace ChronosEngine {
 			if (e.Key == Key.Escape)
 				Window.Exit();
 
-			if (e.Key == Key.F11)
-			if (Window.WindowState == WindowState.Fullscreen)
-				Window.WindowState = WindowState.Normal;
-			else
-				Window.WindowState = WindowState.Fullscreen;
+			Game.OnKeyDown(e);
+		}
+
+		void Keyboard_KeyUp(object sender, KeyboardKeyEventArgs e) {
+			Game.OnKeyUp(e);
 		}
 
 		#endregion

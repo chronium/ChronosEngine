@@ -113,6 +113,8 @@ namespace ChronosEngine {
 
 		public virtual void OnMouseMove(MouseMoveEventArgs e) { }
 		public virtual void OnKeyPress(KeyPressEventArgs e) { }
+		public virtual void OnKeyDown(KeyboardKeyEventArgs e) { }
+		public virtual void OnKeyUp(KeyboardKeyEventArgs e) { }
 
 		public void SetClearColor(Color color) {
 			GL.ClearColor(color);

@@ -10,6 +10,7 @@ using ChronosEngine.Render2D.Primitives;
 using ChronosEngine.Structures;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using OpenTK.Input;
 
 namespace CHIP8Emu {
 	public class CHIP8 : ChronoGame {
@@ -23,7 +24,7 @@ namespace CHIP8Emu {
 
 		public byte[] Screen { get; set; }
 
-		public CHIP8(string rom, int scale = 8, int width = 64, int height = 32) 
+		public CHIP8(string rom, int scale = 16, int width = 64, int height = 32) 
 			: base(new Resolution(width * scale, height * scale), "CHIP8 Emulator") {
 			this.Scale = scale;
 			this.ScreenSize = new Resolution(width, height);
@@ -53,6 +54,17 @@ namespace CHIP8Emu {
 											   'a', 's', 'd', 'f',
                                                'z', 'x', 'c', 'v' };
 
+		public override void OnKeyDown(KeyboardKeyEventArgs e) {
+			for (int i = 0; i < keyCodes.Length; i++)
+				if (e.Key.ToString().ToLower()[0] == keyCodes[i])
+					Keys[i] = true;
+		}
+		public override void OnKeyUp(KeyboardKeyEventArgs e) {
+			for (int i = 0; i < keyCodes.Length; i++)
+				if (e.Key.ToString().ToLower()[0] == keyCodes[i])
+					Keys[i] = false;
+		}
+
 		public override void OnKeyPress(KeyPressEventArgs e) {
 			for (int i = 0; i < keyCodes.Length; i++) {
 				if (e.KeyChar == keyCodes[i]) {
@@ -71,6 +83,15 @@ namespace CHIP8Emu {
 
 		public override void OnRenderFrame(FrameEventArgs e) {
 			this.Clear();
+
+			if (Emulator.DT > 0)
+				Emulator.DT--;
+
+			if (Emulator.ST > 0) {
+				Emulator.ST--;
+				if (Emulator.ST == 0)
+					Console.Beep();
+			}
 
 			renderer.Begin();
 			for (int y = 0; y < ScreenSize.Height; y++)
