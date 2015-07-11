@@ -50,6 +50,8 @@ namespace CHIP8Emu {
 						if (instr == 0x00EE) {
 							SP -= 2;
 							PC = RAM.readShort(SB + (SP * 2));
+						} else if (instr == 0x00E0) {
+							Array.Clear(chip.Screen, 0, chip.Screen.Length);
 						} else {
 							Console.WriteLine("Unknown: {0} at cycle {1}", instr.ToString("x").PadLeft(4, '0'), chip.count);
 							while (true) ;
@@ -101,8 +103,14 @@ namespace CHIP8Emu {
 							case 0x0:
 								V[xr] = V[yr];
 								break;
+							case 0x1:
+								V[xr] = (byte)(V[xr] | V[yr]);
+								break;
 							case 0x2:
 								V[xr] = (byte)(V[xr] & V[yr]);
+								break;
+							case 0x3:
+								V[xr] = (byte)(V[xr] ^ V[yr]);
 								break;
 							case 0x4:
 								short res = (short)(V[xr] + V[yr]);
@@ -112,19 +120,35 @@ namespace CHIP8Emu {
 									V[0xF] = 0;
 								V[xr] = (byte)(res & 0xFF);
 								break;
-							case 0x6:
-								if ((V[xr] & (1 << 7)) == 1)
+							case 054:
+								res = (short)(V[xr] - V[yr]);
+								if (res > 255)
 									V[0xF] = 1;
 								else
 									V[0xF] = 0;
-								V[xr] >>= 1;
+								V[xr] = (byte)(res & 0xFF);
+								break;
+							case 0x6:
+								V[0xF] = (byte)(V[yr] & (1 << 7));
+								V[xr] = (byte)(V[yr] >> 1);
 								break;
 							case 0xE:
-								if ((V[xr] & (1 << 7)) == 1)
-									V[0xF] = 1;
-								else
-									V[0xF] = 0;
-								V[xr] <<= 1;
+								V[0xF] = (byte)(V[yr] & (1 << 7));
+								V[xr] = (byte)(V[yr] << 1);
+								break;
+							default:
+								Console.WriteLine("Unknown: {0} at cycle {1}", instr.ToString("x").PadLeft(4, '0'), chip.count);
+								while (true) ;
+						}
+						break;
+					case 0x9:
+						xr = (byte)((instr & 0x0F00) >> 8);
+						yr = (byte)((instr & 0x00F0) >> 4);
+						val = (byte)(instr & 0x000F);
+						switch (val) {
+							case 0x0:
+								if (V[xr] != V[yr])
+									PC += 2;
 								break;
 							default:
 								Console.WriteLine("Unknown: {0} at cycle {1}", instr.ToString("x").PadLeft(4, '0'), chip.count);
@@ -134,6 +158,10 @@ namespace CHIP8Emu {
 					case 0xA:
 						short setVal = (short)(instr & 0x0FFF);
 						I = setVal;
+						break;
+					case 0xB:
+						setVal = (short)(instr & 0x0FFF);
+						PC = (short)(setVal + V[0]);
 						break;
 					case 0xC:
 						reg = (byte)((instr & 0x0F00) >> 8);
@@ -165,7 +193,7 @@ namespace CHIP8Emu {
 						reg = (byte)((instr & 0x0F00) >> 8);
 						val = (byte)(instr & 0x00FF);
 						switch (val) {
-							case 0xE9:
+							case 0x9E:
 								if (chip.Keys[V[reg]])
 									PC += 2;
 								break;
@@ -186,11 +214,11 @@ namespace CHIP8Emu {
 								halted = true;
 								keyReg = reg;
 								break;
+							case 0x18:
+								Console.WriteLine("Sound: " + V[reg]);
+								break;
 							case 0x1E:
 								I += V[reg];
-								break;
-							case 0x18:
-								Console.WriteLine("Sound: 1" + V[reg]);
 								break;
 							case 0x29:
 								I = (short)(V[reg] * 5);
@@ -205,10 +233,12 @@ namespace CHIP8Emu {
 							case 0x55:
 								for (int i = I; i < I + reg; i++)
 									RAM[i] = V[i - I];
+								I += (short)(reg + 1);
 								break;
 							case 0x65:
 								for (int i = I; i < I + reg; i++)
 									V[i - I] = RAM[i];
+								I += (short)(reg + 1);
 								break;
 							default:
 								Console.WriteLine("Unknown: {0} at cycle {1}", instr.ToString("x").PadLeft(4, '0'), chip.count);
