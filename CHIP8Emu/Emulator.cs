@@ -58,11 +58,13 @@ namespace CHIP8Emu {
 					case 0x0:
 						switch (kk) {
 							case 0xEE:
-								PC = RAM[SB + SP];
+								PC = RAM.readShort(SB + SP);
 								SP -= 2;
 								break;
 							case 0xE0:
 								Array.Clear(chip.Screen, 0, chip.Screen.Length);
+								break;
+							case 0x00:
 								break;
 							default:
 								Console.WriteLine("Unknown opcode: {0}", instr.ToString("x").PadLeft(4, '0'));
@@ -124,6 +126,11 @@ namespace CHIP8Emu {
 								V[x] >>= 1;
 								break;
 							case 0x7:
+								temp = (short)(V[y] - V[x]);
+								V[0xF] = (byte)(V[y] > V[x] ? 1 : 0);
+								V[x] = (byte)(temp & 0xFF);
+								break;
+							case 0xE:
 								V[0xF] = (byte)((V[x] & 128) >> 7);
 								V[x] <<= 1;
 								break;
@@ -147,21 +154,24 @@ namespace CHIP8Emu {
 						V[x] = (byte)(r & kk);
 						break;
 					case 0xD:
-						for (int yl = V[y]; yl < V[y] + n; yl++)
-							for (int xl = V[x]; xl < V[x] + 8; xl++) {
-								int b = 8 - (xl - V[x]);
-								byte set = (byte)(RAM[I + (yl - V[y])] & (1 << b - 1));
-								if (xl < 0 || xl >= chip.ScreenSize.Width)
+						V[0xF] = 0;
+						byte px, py = 0;
+						for (int yy = 0; yy < n; yy++) {
+							py = (byte)((V[y] + yy) % chip.ScreenSize.Height);
+							if (py < 0 || py > chip.ScreenSize.Height)
+								continue;
+							for (int xx = 0; xx < 8; xx++) {
+								px = (byte)((V[x] + xx) % chip.ScreenSize.Width);
+								if (px < 0 || px > chip.ScreenSize.Width)
 									continue;
-								if (yl < 0 || yl >= chip.ScreenSize.Height)
-									continue;
-								if (chip.Screen[xl + yl * chip.ScreenSize.Width] == 1 && set == 1)
+								byte color = (byte)((RAM[(I + yy)] >> (7 - xx)) & 1);
+								byte col = chip.Screen[px + py * chip.ScreenSize.Width];
+								if (color > 0 && col > 0)
 									V[0xF] = 1;
-								else 
-									V[0xF] = 0;
-
-								chip.Screen[xl + yl * chip.ScreenSize.Width] = set;
+								color ^= col;
+								chip.Screen[px + py * chip.ScreenSize.Width] = color;
                             }
+						}
 						break;
 					case 0xE:
 						switch(kk) {

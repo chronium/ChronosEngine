@@ -24,13 +24,16 @@ namespace CHIP8Emu {
 
 		public byte[] Screen { get; set; }
 
-		public CHIP8(string rom, int scale = 16, int width = 64, int height = 32) 
+		public int clockSpeed;
+
+		public CHIP8(string rom, int clockSpeed = 60, int scale = 16, int width = 64, int height = 32) 
 			: base(new Resolution(width * scale, height * scale), "CHIP8 Emulator") {
 			this.Scale = scale;
 			this.ScreenSize = new Resolution(width, height);
 			this.Screen = new byte[width * height];
 
 			this.rom = rom;
+			this.clockSpeed = clockSpeed;
 		}
 
 		public override void OnLoad(EventArgs e) {
@@ -49,10 +52,7 @@ namespace CHIP8Emu {
 
 		public int count = 0;
 		public bool[] Keys { get; set; } = new bool[16];
-		private char[] keyCodes = new char[] { '1', '2', '3', '4',
-											   'q', 'w', 'e', 'r',
-											   'a', 's', 'd', 'f',
-                                               'z', 'x', 'c', 'v' };
+		private char[] keyCodes = new char[] { 'x', '1', '2', '3', 'q', 'w', 'e', 'a', 's', 'd', 'z', 'c', '4', 'r', 'f', 'v' };
 
 		public override void OnKeyDown(KeyboardKeyEventArgs e) {
 			for (int i = 0; i < keyCodes.Length; i++)
@@ -76,6 +76,9 @@ namespace CHIP8Emu {
 		}
 
 		public override void OnUpdateFrame(FrameEventArgs e) {
+			if (GameEngine.Window.TargetUpdateFrequency != clockSpeed)
+				GameEngine.Window.TargetUpdateFrequency = clockSpeed;
+
 			Emulator.Run(this);
 			count++;
 			GameEngine.Window.Title = "CHIP8 Emulator - Cycles: " + count;
