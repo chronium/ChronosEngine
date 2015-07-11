@@ -41,6 +41,7 @@ using Microsoft.Scripting.Hosting;
 using System.Collections.Generic;
 using ChronosEngine.Scripting;
 using System.IO;
+using System.ComponentModel;
 
 namespace ChronosEngine {
 	public class GameEngine {
@@ -81,7 +82,12 @@ namespace ChronosEngine {
 			Window.UpdateFrame += OnUpdateFrame;
 			Window.MouseMove += OnMouseMove;
 			Window.KeyPress += OnKeyPress;
+			Window.Closing += OnClosing;
 			Game = game;
+		}
+
+		private void OnClosing(object sender, CancelEventArgs e) {
+			Game.OnClosing(e);
 		}
 
 		#region Keyboard_KeyDown

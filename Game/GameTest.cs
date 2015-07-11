@@ -30,6 +30,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using BulletSharp;
@@ -103,6 +104,10 @@ namespace Game {
 
 		Vector3 Movement;
 		float Speed = 4f;
+
+		public override void OnClosing(CancelEventArgs e) {
+			Scene.CharacterController.Jump();
+		}
 
 		protected void UpdateMovement() {
 			Speed /= 60f;

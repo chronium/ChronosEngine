@@ -30,6 +30,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using ChronosEngine.Camera;
 using ChronosEngine.Interfaces;
@@ -115,6 +116,8 @@ namespace ChronosEngine {
 		public virtual void OnKeyPress(KeyPressEventArgs e) { }
 		public virtual void OnKeyDown(KeyboardKeyEventArgs e) { }
 		public virtual void OnKeyUp(KeyboardKeyEventArgs e) { }
+
+		public virtual void OnClosing(CancelEventArgs e) { }
 
 		public void SetClearColor(Color color) {
 			GL.ClearColor(color);
