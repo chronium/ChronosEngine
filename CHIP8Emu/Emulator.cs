@@ -120,7 +120,7 @@ namespace CHIP8Emu {
 									V[0xF] = 0;
 								V[xr] = (byte)(res & 0xFF);
 								break;
-							case 054:
+							case 0x5:
 								res = (short)(V[xr] - V[yr]);
 								if (res > 255)
 									V[0xF] = 1;
