@@ -31,8 +31,8 @@
 using System;
 using OpenTK;
 using System.Drawing;
-using ChronosEngine.Textures;
 using ChronosEngine.Interfaces;
+using ChronosEngine.Base.Textures;
 
 namespace ChronosEngine.Render2D {
 	public class Sprite2D : IGameObject {

@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ChronosEngine.Structures;
+using ChronosEngine.Base.Structures;
 
 namespace CHIP8Emu {
 	public class Emulator {

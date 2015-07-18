@@ -34,7 +34,6 @@ using OpenTK.Graphics.OpenGL;
 using System.Drawing;
 using OpenTK.Input;
 using OpenTK.Graphics;
-using ChronosEngine.Structures;
 using ChronosEngine.Render2D.Primitives;
 using ChronosEngine.Shaders;
 using Microsoft.Scripting.Hosting;
@@ -42,6 +41,7 @@ using System.Collections.Generic;
 using ChronosEngine.Scripting;
 using System.IO;
 using System.ComponentModel;
+using ChronosEngine.Base.Structures;
 
 namespace ChronosEngine {
 	public class GameEngine {

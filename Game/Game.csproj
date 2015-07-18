@@ -67,6 +67,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <ProjectReference Include="..\ChronosEngine.Base\ChronosEngine.Base.csproj">
+      <Project>{8d66453a-526e-41d5-bccf-c096b138b29e}</Project>
+      <Name>ChronosEngine.Base</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ChronosEngine\ChronosEngine.csproj">
       <Project>{36A21D16-3A74-435F-BE07-88DC6F415075}</Project>
       <Name>ChronosEngine</Name>

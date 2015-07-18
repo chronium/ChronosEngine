@@ -67,6 +67,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ChronosEngine.Base\ChronosEngine.Base.csproj">
+      <Project>{8d66453a-526e-41d5-bccf-c096b138b29e}</Project>
+      <Name>ChronosEngine.Base</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ChronosEngine\ChronosEngine.csproj">
       <Project>{36a21d16-3a74-435f-be07-88dc6f415075}</Project>
       <Name>ChronosEngine</Name>

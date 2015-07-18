@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BulletSharp;
+using ChronosEngine.Base.Structures;
 using ChronosEngine.Interfaces;
 using ChronosEngine.Primitives3D;
 using ChronosEngine.Shaders;
-using ChronosEngine.Structures;
-using ChronosEngine.Textures;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 

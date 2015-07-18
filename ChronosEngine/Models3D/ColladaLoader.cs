@@ -8,15 +8,16 @@ using System.Xml.Linq;
 using Assimp;
 using Assimp.Configs;
 using BulletSharp;
+using ChronosEngine.Base;
+using ChronosEngine.Base.Structures;
+using ChronosEngine.Base.Textures;
 using ChronosEngine.Scene;
-using ChronosEngine.Structures;
-using ChronosEngine.Textures;
 using OpenTK;
 
 namespace ChronosEngine.Models3D {
 	public class ColladaLoader {
 		public static List<ModelStr> Load(string name, SceneGraph graph, ContentManager manager) {
-			var materialList = new List<Structures.Material>();
+			var materialList = new List<Base.Structures.Material>();
 
 			var modelList = new List<ModelStr>();
 			var modelDict = new Dictionary<string, ColladaModel>();
@@ -39,7 +40,7 @@ namespace ChronosEngine.Models3D {
 
 				if (scene.HasMaterials)
 					foreach (Assimp.Material mat in scene.Materials) {
-						materialList.Add(new Structures.Material() {
+						materialList.Add(new Base.Structures.Material() {
 							AmbientColor = new Vector4(0.125f, 0.125f, 0.125f, 1f),
 							SpecularIntensity = new Vector4(mat.ColorSpecular.R, mat.ColorSpecular.G, mat.ColorSpecular.B, mat.ColorSpecular.A),
 							SpecularPower = 64f,
@@ -111,7 +112,7 @@ namespace ChronosEngine.Models3D {
 
 	public struct ColladaModel {
 		public Primitives3D.Mesh mesh;
-		public Structures.Material material;
+		public Base.Structures.Material material;
 	}
 
 	public struct ModelStr {

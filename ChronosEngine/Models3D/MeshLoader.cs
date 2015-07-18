@@ -4,9 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ChronosEngine.Base;
+using ChronosEngine.Base.Structures;
 using ChronosEngine.Primitives3D;
-using ChronosEngine.Structures;
-using ChronosEngine.Textures;
 using OpenTK;
 
 namespace ChronosEngine.Models3D {

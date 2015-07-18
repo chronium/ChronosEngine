@@ -34,7 +34,7 @@ using OpenTK.Graphics.OpenGL;
 using OpenTK;
 using System.Runtime.CompilerServices;
 using System.Drawing;
-using ChronosEngine.Textures;
+using ChronosEngine.Base.Textures;
 
 namespace ChronosEngine.Render2D {
 	public class ImmediateRenderer2D : IRenderer2D {

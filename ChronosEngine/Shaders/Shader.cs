@@ -35,7 +35,7 @@ using System.IO;
 using System.Text;
 using System.Linq;
 using ChronosEngine.Models3D;
-using ChronosEngine.Structures;
+using ChronosEngine.Base.Structures;
 
 namespace ChronosEngine.Shaders {
 	public abstract class Shader {

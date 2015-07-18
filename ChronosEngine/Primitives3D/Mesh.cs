@@ -4,8 +4,9 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using ChronosEngine.Base;
+using ChronosEngine.Base.Structures;
 using ChronosEngine.Shaders;
-using ChronosEngine.Structures;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 

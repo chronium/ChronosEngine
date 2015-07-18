@@ -31,8 +31,8 @@
 using System;
 using OpenTK;
 using ChronosEngine.Render2D;
-using ChronosEngine.Textures;
 using System.Drawing;
+using ChronosEngine.Base.Textures;
 
 namespace ChronosEngine.Interfaces {
 	/// <summary>

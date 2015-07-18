@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ChronosEngine;
+using ChronosEngine.Base;
 
 namespace CHIP8Emu {
 	public class Chip8ROM : Asset {
