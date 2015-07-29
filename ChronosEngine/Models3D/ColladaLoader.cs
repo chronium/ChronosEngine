@@ -11,7 +11,7 @@ using BulletSharp;
 using ChronosEngine.Base;
 using ChronosEngine.Base.Structures;
 using ChronosEngine.Base.Textures;
-using ChronosEngine.Scene;
+using ChronosEngine.Rendering.Scene;
 using OpenTK;
 
 namespace ChronosEngine.Models3D {
@@ -48,7 +48,7 @@ namespace ChronosEngine.Models3D {
 						});
 					}
 
-				foreach (Mesh mesh in scene.Meshes) {
+				foreach (Assimp.Mesh mesh in scene.Meshes) {
 					var meshLoaded = LoadMesh(mesh);
 					var material = materialList[mesh.MaterialIndex];
 					modelDict.Add(mesh.Name, new ColladaModel() {
@@ -77,7 +77,7 @@ namespace ChronosEngine.Models3D {
 			return modelList;
 		}
 
-		public static Primitives3D.Mesh LoadMesh(Mesh mesh) {
+		public static Rendering.Scene.Mesh LoadMesh(Assimp.Mesh mesh) {
 			List<Vector3> positions = new List<Vector3>();
 			List<Vector3> normals = new List<Vector3>();
 			List<Vector2> texCoords = new List<Vector2>();
@@ -93,7 +93,7 @@ namespace ChronosEngine.Models3D {
 			for (int i = 0; i < mesh.Vertices.Count; i++)
 				vertices.Add(new Vertex3(positions[i], texCoords[i], normals[i]));
 
-			return new Primitives3D.Mesh(vertices.ToArray(), vertices.Count, mesh.GetIndices(), mesh.GetIndices().Length, false);
+			return new Rendering.Scene.Mesh(vertices.ToArray(), vertices.Count, mesh.GetIndices(), mesh.GetIndices().Length, false);
 		}
 
 		public static string AssetRoot {
@@ -111,7 +111,7 @@ namespace ChronosEngine.Models3D {
 	}
 
 	public struct ColladaModel {
-		public Primitives3D.Mesh mesh;
+		public Rendering.Scene.Mesh mesh;
 		public Base.Structures.Material material;
 	}
 

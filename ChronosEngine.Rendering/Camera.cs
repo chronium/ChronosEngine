@@ -34,7 +34,7 @@ namespace ChronosEngine.Rendering {
 		}
 
 		public Camera(float fieldOfView, Resolution resolution, float near, float far, bool radians = false, bool orthographic = false) {
-			this.FieldOfView = radians ? fieldOfView : MathHelper.DegreesToRadians(FieldOfView);
+			this.FieldOfView = radians ? fieldOfView : MathHelper.DegreesToRadians(fieldOfView);
 			this.Resolution = resolution;
 			this.Near = near;
 			this.Far = far;

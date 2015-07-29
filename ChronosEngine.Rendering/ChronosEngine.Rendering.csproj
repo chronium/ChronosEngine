@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BulletSharp">
+      <HintPath>..\Game\bin\Debug\BulletSharp.dll</HintPath>
+    </Reference>
     <Reference Include="OpenTK">
       <HintPath>..\..\..\Game\Game\bin\Debug\OpenTK.dll</HintPath>
     </Reference>
@@ -47,6 +50,11 @@
     <Compile Include="Camera.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RenderingEngine.cs" />
+    <Compile Include="Scene\Mesh.cs" />
+    <Compile Include="Scene\Model.cs" />
+    <Compile Include="Scene\SceneGraph.cs" />
+    <Compile Include="Shaders\Lighting.cs" />
+    <Compile Include="Shaders\Shader.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ChronosEngine.Base\ChronosEngine.Base.csproj">

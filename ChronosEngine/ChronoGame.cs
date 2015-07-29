@@ -50,8 +50,7 @@ namespace ChronosEngine {
 		/// </summary>
 		/// <value>The game engine.</value>
 		public GameEngine GameEngine { get; }
-
-		public ICamera Camera { get; set; }
+		
 		public static ChronoGame Instance { get; set; }
 
 		public KeyboardDevice Keyboard { get; set; }
@@ -142,17 +141,6 @@ namespace ChronosEngine {
 			GL.Enable(EnableCap.Blend);
 			GL.BlendFunc(src, dest);
 		}
-		public void Enable3DBlend() {
-			GL.Enable(EnableCap.Blend);
-			GL.BlendFunc(BlendingFactorSrc.One, BlendingFactorDest.One);
-			GL.DepthMask(false);
-			GL.DepthFunc(DepthFunction.Equal);
-		}
-		public void Disable3DBlend() {
-			GL.DepthFunc(DepthFunction.Less);
-			GL.DepthMask(true);
-			GL.Disable(EnableCap.Blend);
-		}
 		public void CullFaces(CullFaceMode mode) {
 			GL.CullFace(mode);
 			GL.Enable(EnableCap.CullFace);
@@ -173,20 +161,20 @@ namespace ChronosEngine {
 			GL.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
 		}
 
-		public void SetupQuaternionCamera3D(float speed, Vector2 mouseSensitivity, CamMode mode) {
+		/*public void SetupQuaternionCamera3D(float speed, Vector2 mouseSensitivity, CamMode mode) {
 			Camera = new QuaternionCamera(GameEngine.Window.Mouse, GameEngine.Window.Keyboard, GameEngine.Window);
 			((QuaternionCamera)Camera).SetCameraMode(mode);
 			((QuaternionCamera)Camera).MouseXSensitivity = mouseSensitivity.X;
 			((QuaternionCamera)Camera).MouseYSensitivity = mouseSensitivity.X;
 			((QuaternionCamera)Camera).Speed = speed;
-		}
+		}*/
 
-		public void SetCameraProjectionMatrix() {
+		/*public void SetCameraProjectionMatrix() {
 			GL.MatrixMode(MatrixMode.Modelview);
 			Matrix4 proj;
 			Camera.GetViewMatrix(out proj);
 			GL.LoadMatrix(ref proj);
-		}
+		}*/
 	}
 }
 

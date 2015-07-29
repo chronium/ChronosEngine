@@ -5,7 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using ChronosEngine;
 using ChronosEngine.Models3D;
-using ChronosEngine.Shaders;
+using ChronosEngine.Rendering;
+using ChronosEngine.Rendering.Shaders;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
@@ -21,14 +22,9 @@ namespace Game.Shaders {
 			GL.BindAttribLocation(this.ProgramID, 3, "vnormal");
 		}
 		
-		public override void Update(ChronoGame game, Model model) {
-			Matrix4 viewProjection;
-			game.Camera.GetViewProjectionMatrix(out viewProjection);
-			Matrix4 modelViewProjection = model.ModelMatrix * viewProjection;
-
+		public override void UpdateUniforms(Camera camera, Matrix4 modelMatrix) {
+			Matrix4 modelViewProjection = modelMatrix * camera.ViewProjectionMatrix;
 			GL.UniformMatrix4(this.GetUniform("mvp"), false, ref modelViewProjection);
-
-			this.BindMaterial("material", model.Material);
 		}
 	}
 }
